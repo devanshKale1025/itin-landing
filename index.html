@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITIN Application — Fast, Compliant, Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f0e0c;
+        --cream: #f7f4ee;
+        --warm-white: #fdfcf9;
+        --gold: #c8972b;
+        --gold-light: #e8b84b;
+        --gold-pale: #f5e9cc;
+        --sage: #3d5a4a;
+        --sage-light: #5a7a66;
+        --muted: #6b6760;
+        --border: #e0dbd0;
+        --red-flag: #c0392b;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--warm-white);
+        color: var(--ink);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(253, 252, 249, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 18px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+      }
+      .nav-logo span {
+        color: var(--gold);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.875rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .nav-cta {
+        background: var(--ink);
+        color: var(--cream) !important;
+        padding: 10px 22px;
+        border-radius: 6px;
+        font-weight: 600 !important;
+        transition: background 0.2s !important;
+      }
+      .nav-cta:hover {
+        background: var(--sage) !important;
+        color: white !important;
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 60% 80% at 80% 40%,
+            rgba(200, 151, 43, 0.07) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 50% 60% at 10% 80%,
+            rgba(61, 90, 74, 0.06) 0%,
+            transparent 50%
+          );
+      }
+
+      .hero-left {
+        padding: 80px 64px 80px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--gold-pale);
+        border: 1px solid rgba(200, 151, 43, 0.3);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #8a6520;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+        width: fit-content;
+        animation: fadeUp 0.6s ease both;
+      }
+
+      .hero-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--gold);
+        border-radius: 50%;
+      }
+
+      h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.8rem, 4vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        margin-bottom: 24px;
+        animation: fadeUp 0.6s 0.1s ease both;
+      }
+
+      h1 em {
+        font-style: normal;
+        color: var(--gold);
+        position: relative;
+      }
+
+      .hero-sub {
+        font-size: 1.125rem;
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 480px;
+        margin-bottom: 40px;
+        font-weight: 400;
+        animation: fadeUp 0.6s 0.2s ease both;
+      }
+
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 56px;
+        animation: fadeUp 0.6s 0.3s ease both;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: var(--cream);
+        padding: 16px 32px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--sage);
+        transform: translateX(-101%);
+        transition: transform 0.3s ease;
+      }
+
+      .btn-primary:hover::after {
+        transform: translateX(0);
+      }
+      .btn-primary span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-primary .arrow {
+        position: relative;
+        z-index: 1;
+        transition: transform 0.2s;
+      }
+      .btn-primary:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      .btn-secondary {
+        font-size: 0.9rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+      }
+      .btn-secondary:hover {
+        color: var(--ink);
+      }
+
+      .trust-row {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        animation: fadeUp 0.6s 0.4s ease both;
+      }
+
+      .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .trust-item .icon {
+        width: 28px;
+        height: 28px;
+        background: var(--gold-pale);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+      }
+
+      .hero-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 80px 80px 40px;
+        animation: fadeUp 0.8s 0.2s ease both;
+      }
+
+      .hero-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow:
+          0 2px 4px rgba(0, 0, 0, 0.04),
+          0 8px 24px rgba(0, 0, 0, 0.08),
+          0 0 0 1px var(--border);
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .hero-card-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .hero-card-sub {
+        font-size: 0.825rem;
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+
+      .price-display {
+        background: var(--cream);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+        border: 1px solid var(--border);
+      }
+
+      .price-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .price-amount {
+        font-family: "Playfair Display", serif;
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--ink);
+        line-height: 1;
+      }
+
+      .price-note {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .checklist {
+        list-style: none;
+        margin-bottom: 28px;
+      }
+
+      .checklist li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.875rem;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        color: var(--ink);
+      }
+
+      .checklist li:last-child {
+        border-bottom: none;
+      }
+
+      .check {
+        width: 18px;
+        height: 18px;
+        background: var(--sage);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: white;
+        font-size: 0.65rem;
+      }
+
+      .timeline-tag {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--gold-pale);
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 0.825rem;
+        color: #8a6520;
+        font-weight: 600;
+      }
+
+      /* SECTION STYLES */
+      section {
+        padding: 100px 80px;
+      }
+
+      .section-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 500;
+        margin-bottom: 16px;
+      }
+
+      h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 3vw, 2.75rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+        margin-bottom: 20px;
+      }
+
+      .section-intro {
+        font-size: 1.05rem;
+        color: var(--muted);
+        max-width: 560px;
+        line-height: 1.7;
+      }
+
+      /* WHO NEEDS */
+      .who-section {
+        background: var(--cream);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .who-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 80px;
+        align-items: start;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .who-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 8px;
+      }
+
+      .who-card {
+        background: white;
+        border-radius: 14px;
+        padding: 28px;
+        border: 1px solid var(--border);
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .who-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gold);
+        transform: scaleX(0);
+        transition: transform 0.3s;
+      }
+
+      .who-card:hover {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      .who-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .who-card-icon {
+        font-size: 1.75rem;
+        margin-bottom: 12px;
+      }
+      .who-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .who-card p {
+        font-size: 0.825rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* DOCS NEEDED */
+      .docs-section {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .docs-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .docs-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        margin-top: 60px;
+      }
+
+      .doc-item {
+        display: flex;
+        gap: 20px;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border);
+        align-items: flex-start;
+      }
+
+      .doc-item:last-child {
+        border-bottom: none;
+      }
+
+      .doc-number {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--gold);
+        font-weight: 500;
+        padding-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .doc-info h4 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .doc-info p {
+        font-size: 0.825rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .doc-badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-top: 6px;
+      }
+
+      .badge-required {
+        background: rgba(192, 57, 43, 0.1);
+        color: var(--red-flag);
+      }
+      .badge-conditional {
+        background: rgba(200, 151, 43, 0.15);
+        color: #8a6520;
+      }
+
+      /* PROCESS */
+      .process-section {
+        background: var(--ink);
+        color: var(--cream);
+      }
+
+      .process-section .section-label {
+        color: var(--gold-light);
+      }
+      .process-section h2 {
+        color: white;
+      }
+      .process-section .section-intro {
+        color: rgba(247, 244, 238, 0.6);
+      }
+
+      .process-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .process-steps {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+        margin-top: 64px;
+        position: relative;
+      }
+
+      .process-steps::before {
+        content: "";
+        position: absolute;
+        top: 28px;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        background: rgba(200, 151, 43, 0.3);
+      }
+
+      .step {
+        text-align: center;
+        padding: 0 16px;
+        position: relative;
+      }
+
+      .step-num {
+        width: 56px;
+        height: 56px;
+        background: var(--gold);
+        color: var(--ink);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 900;
+        margin: 0 auto 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .step h4 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: white;
+      }
+      .step p {
+        font-size: 0.775rem;
+        color: rgba(247, 244, 238, 0.55);
+        line-height: 1.5;
+      }
+
+      .step-time {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        color: var(--gold-light);
+        margin-top: 8px;
+        letter-spacing: 0.05em;
+      }
+
+      /* COMPLIANCE */
+      .compliance-section {
+        background: var(--cream);
+        border-top: 1px solid var(--border);
+      }
+      .compliance-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .compliance-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
+        margin-top: 48px;
+      }
+
+      .compliance-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 28px;
+      }
+
+      .compliance-card .icon {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+      }
+      .compliance-card h4 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .compliance-card p {
+        font-size: 0.825rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* SOCIAL PROOF */
+      .proof-section {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 64px;
+      }
+
+      .stat {
+        padding: 36px 32px;
+        text-align: center;
+        border-right: 1px solid var(--border);
+      }
+
+      .stat:last-child {
+        border-right: none;
+      }
+
+      .stat-num {
+        font-family: "Playfair Display", serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--ink);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+
+      .stat-num span {
+        color: var(--gold);
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      /* FAQ */
+      .faq-section {
+        background: var(--cream);
+        border-top: 1px solid var(--border);
+      }
+      .faq-inner {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid var(--border);
+        padding: 24px 0;
+      }
+
+      .faq-q {
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .faq-q::after {
+        content: "+";
+        font-size: 1.5rem;
+        color: var(--gold);
+        flex-shrink: 0;
+        font-weight: 300;
+        line-height: 1;
+      }
+
+      .faq-a {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.7;
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.3s ease,
+          margin 0.3s ease;
+      }
+
+      .faq-item.open .faq-q::after {
+        content: "−";
+      }
+      .faq-item.open .faq-a {
+        max-height: 200px;
+        margin-top: 16px;
+      }
+
+      /* CTA SECTION */
+      .cta-section {
+        background: var(--sage);
+        text-align: center;
+        padding: 100px 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(200, 151, 43, 0.2) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .cta-section h2 {
+        font-family: "Playfair Display", serif;
+        color: white;
+        max-width: 600px;
+        margin: 0 auto 20px;
+      }
+
+      .cta-section p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.05rem;
+        margin-bottom: 40px;
+      }
+
+      .btn-cta-white {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        color: var(--sage);
+        padding: 18px 40px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .btn-cta-white:hover {
+        background: var(--gold);
+        color: var(--ink);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      .cta-note {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 20px;
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--ink);
+        color: rgba(247, 244, 238, 0.5);
+        padding: 48px 80px;
+        font-size: 0.825rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .footer-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1rem;
+        color: var(--cream);
+        font-weight: 700;
+      }
+      .footer-logo span {
+        color: var(--gold);
+      }
+
+      .footer-disclaimer {
+        max-width: 600px;
+        line-height: 1.6;
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 20px;
+      }
+      .footer-links a {
+        color: rgba(247, 244, 238, 0.5);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: var(--cream);
+      }
+
+      /* ANIMATIONS */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        nav {
+          padding: 16px 24px;
+        }
+        .nav-links {
+          display: none;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+        .hero-left {
+          padding: 60px 24px 40px;
+        }
+        .hero-right {
+          padding: 0 24px 60px;
+        }
+        section {
+          padding: 72px 24px;
+        }
+        .who-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .who-cards {
+          grid-template-columns: 1fr;
+        }
+        .docs-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .process-steps {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+        .process-steps::before {
+          display: none;
+        }
+        .compliance-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .stat {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        footer {
+          flex-direction: column;
+          text-align: center;
+          padding: 40px 24px;
+        }
+        .footer-disclaimer {
+          max-width: 100%;
+        }
+        .cta-section {
+          padding: 72px 24px;
+        }
+        .trust-row {
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo">IKSHANA <span>Z.Inc</span></div>
+      <ul class="nav-links">
+        <li><a href="#who">Who Qualifies</a></li>
+        <li><a href="#documents">Documents</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#apply" class="nav-cta">Apply Now</a></li>
+      </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-bg"></div>
+
+      <div class="hero-left">
+        <div class="hero-badge">IRS-Compliant Service</div>
+        <h1>Get Your ITIN in <em>3–4 Weeks.</em> Flat Fee. No Surprises.</h1>
+        <p class="hero-sub">
+          We handle everything — form preparation, document review, and
+          certified IRS submission — so you don't have to navigate complex tax
+          rules alone. Fully compliant. Transparent pricing.
+        </p>
+        <div class="hero-actions">
+          <a href="#apply" class="btn-primary">
+            <span>Apply in 20 Minutes</span>
+            <span class="arrow">→</span>
+          </a>
+          <a href="#process" class="btn-secondary">See how it works ↓</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item">
+            <div class="icon">🔒</div>
+            Encrypted & Secure
+          </div>
+          <div class="trust-item">
+            <div class="icon">📋</div>
+            IRS Compliant
+          </div>
+          <div class="trust-item">
+            <div class="icon">✓</div>
+            500+ Filed
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-card-title">ITIN Application</div>
+          <div class="hero-card-sub">Everything included. One flat fee.</div>
+
+          <div class="price-display">
+            <div class="price-label">Service Fee</div>
+            <div class="price-amount">$250</div>
+            <div class="price-note">One-time · No hidden charges</div>
+          </div>
+
+          <ul class="checklist">
+            <li>
+              <div class="check">✓</div>
+              W-7 Form Preparation
+            </li>
+            <li>
+              <div class="check">✓</div>
+              Document Review & Verification
+            </li>
+            <li>
+              <div class="check">✓</div>
+              IRS Submission via Certified Mail
+            </li>
+            <li>
+              <div class="check">✓</div>
+              Real-Time Application Tracking
+            </li>
+            <li>
+              <div class="check">✓</div>
+              Case Support Throughout
+            </li>
+          </ul>
+
+          <div class="timeline-tag">
+            ⏱ Typical IRS processing: 7–11 weeks after filing
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO NEEDS AN ITIN -->
+    <section class="who-section" id="who">
+      <div class="who-grid">
+        <div class="reveal">
+          <div class="section-label">Eligibility</div>
+          <h2>Who Needs an ITIN?</h2>
+          <p class="section-intro">
+            If you're a foreign national with a US tax obligation but no Social
+            Security Number, an ITIN is your required tax identifier. Here are
+            the most common situations:
+          </p>
+        </div>
+        <div class="who-cards reveal">
+          <div class="who-card">
+            <div class="who-card-icon">🌎</div>
+            <h3>Foreign Nationals with US Income</h3>
+            <p>
+              Earning wages, rental income, or investment returns from US
+              sources requires a tax ID for IRS filings.
+            </p>
+          </div>
+          <div class="who-card">
+            <div class="who-card-icon">👫</div>
+            <h3>Spouses & Dependents</h3>
+            <p>
+              Non-US spouses or children of US taxpayers who need to be listed
+              on a joint federal tax return.
+            </p>
+          </div>
+          <div class="who-card">
+            <div class="who-card-icon">📈</div>
+            <h3>Investors & Property Owners</h3>
+            <p>
+              Foreign investors with US real estate, brokerage accounts, or
+              partnership interests subject to US tax.
+            </p>
+          </div>
+          <div class="who-card">
+            <div class="who-card-icon">📜</div>
+            <h3>Treaty Benefit Claimants</h3>
+            <p>
+              Non-residents claiming reduced withholding under a US tax treaty
+              must have an ITIN on file.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTS NEEDED -->
+    <section id="documents">
+      <div class="docs-inner">
+        <div class="reveal">
+          <div class="section-label">Preparation</div>
+          <h2>Documents You'll Need</h2>
+          <p class="section-intro">
+            Gather these before you apply. Our system walks you through each one
+            with clear instructions. Most applicants are ready in under 20
+            minutes.
+          </p>
+        </div>
+
+        <div class="docs-grid">
+          <div class="reveal">
+            <div class="doc-item">
+              <div class="doc-number">01</div>
+              <div class="doc-info">
+                <h4>Passport — Photo Page</h4>
+                <p>
+                  Color scan or certified copy of your current, unexpired
+                  passport. This is the primary identity document accepted by
+                  the IRS.
+                </p>
+                <span class="doc-badge badge-required">Required</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-number">02</div>
+              <div class="doc-info">
+                <h4>Supporting Tax Document</h4>
+                <p>
+                  A W-2, 1099, 1042-S, or a letter from a US withholding agent
+                  confirming the need for an ITIN.
+                </p>
+                <span class="doc-badge badge-required">Required</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-number">03</div>
+              <div class="doc-info">
+                <h4>US Visa</h4>
+                <p>
+                  A copy of your visa if you have entered or are currently
+                  residing in the United States.
+                </p>
+                <span class="doc-badge badge-conditional">If Applicable</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal">
+            <div class="doc-item">
+              <div class="doc-number">04</div>
+              <div class="doc-info">
+                <h4>Proof of Foreign Status</h4>
+                <p>
+                  National ID or birth certificate if you have never entered the
+                  US and do not hold a visa.
+                </p>
+                <span class="doc-badge badge-conditional">If Applicable</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-number">05</div>
+              <div class="doc-info">
+                <h4>Prior ITIN Documentation</h4>
+                <p>
+                  If you previously held an ITIN (expired or otherwise), provide
+                  your prior ITIN number and any IRS correspondence.
+                </p>
+                <span class="doc-badge badge-conditional">If Applicable</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-number">06</div>
+              <div class="doc-info">
+                <h4>Spouse / Dependent Documents</h4>
+                <p>
+                  If applying as a spouse or dependent of a US taxpayer, provide
+                  the primary filer's SSN and their most recent tax return.
+                </p>
+                <span class="doc-badge badge-conditional">If Applicable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process-section" id="process">
+      <div class="process-inner">
+        <div class="reveal">
+          <div class="section-label">How It Works</div>
+          <h2>Five Steps to Your ITIN</h2>
+          <p class="section-intro">
+            We've eliminated every unnecessary step. Our process moves fast
+            because everything is prepared, reviewed, and submitted for you.
+          </p>
+        </div>
+
+        <div class="process-steps">
+          <div class="step reveal">
+            <div class="step-num">1</div>
+            <h4>Apply Online</h4>
+            <p>
+              Complete our guided intake form. Answer eligibility questions and
+              enter your details.
+            </p>
+            <div class="step-time">~20 minutes</div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">2</div>
+            <h4>Upload Documents</h4>
+            <p>
+              Securely upload your passport and supporting documents through
+              your case portal.
+            </p>
+            <div class="step-time">~10 minutes</div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">3</div>
+            <h4>We Prepare Your W-7</h4>
+            <p>
+              Our team reviews your documents and prepares your IRS Form W-7
+              with precision.
+            </p>
+            <div class="step-time">1–2 business days</div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">4</div>
+            <h4>You E-Sign</h4>
+            <p>
+              Review and electronically sign your completed W-7 from any device,
+              anywhere.
+            </p>
+            <div class="step-time">5 minutes</div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">5</div>
+            <h4>We File with the IRS</h4>
+            <p>
+              We submit your application via certified mail. Track IRS progress
+              in your dashboard.
+            </p>
+            <div class="step-time">7–11 weeks (IRS)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST & SECURITY -->
+    <section class="compliance-section" id="security">
+      <div class="compliance-inner">
+        <div class="reveal">
+          <div class="section-label">Security & Compliance</div>
+          <h2>Your Information Is Safe with Us</h2>
+          <p class="section-intro">
+            Handling tax and identity documents requires the highest standards.
+            Every part of our system is built with your security in mind.
+          </p>
+        </div>
+
+        <div class="compliance-grid reveal">
+          <div class="compliance-card">
+            <div class="icon">🔐</div>
+            <h4>End-to-End Encryption</h4>
+            <p>
+              All documents are encrypted in transit (TLS 1.2+) and at rest
+              (AES-256). No document is ever stored unencrypted.
+            </p>
+          </div>
+          <div class="compliance-card">
+            <div class="icon">👁</div>
+            <h4>Role-Based Access Control</h4>
+            <p>
+              Only assigned case reviewers can access your documents. Admins are
+              logged. No unnecessary staff exposure.
+            </p>
+          </div>
+          <div class="compliance-card">
+            <div class="icon">📜</div>
+            <h4>Full Audit Trail</h4>
+            <p>
+              Every action on your case — who accessed it, when, and what
+              changed — is permanently recorded.
+            </p>
+          </div>
+          <div class="compliance-card">
+            <div class="icon">🗓</div>
+            <h4>7-Year Retention Policy</h4>
+            <p>
+              Your records are retained for seven years in compliance with IRS
+              recordkeeping requirements, then securely deleted.
+            </p>
+          </div>
+          <div class="compliance-card">
+            <div class="icon">🤝</div>
+            <h4>NDA-Bound Staff</h4>
+            <p>
+              Every team member handling applications operates under a signed
+              non-disclosure agreement.
+            </p>
+          </div>
+          <div class="compliance-card">
+            <div class="icon">🛡</div>
+            <h4>IRS-Compliant Process</h4>
+            <p>
+              Our W-7 preparation process follows IRS Publication 1915
+              guidelines. We stay current with IRS updates and procedural
+              changes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section>
+      <div class="proof-section">
+        <div class="reveal">
+          <div class="stats-row">
+            <div class="stat">
+              <div class="stat-num">500<span>+</span></div>
+              <div class="stat-label">Applications Filed</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">98<span>%</span></div>
+              <div class="stat-label">First-Submission Approval Rate</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">7–11</div>
+              <div class="stat-label">Week IRS Processing Window</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">$250</div>
+              <div class="stat-label">Flat Fee, All Inclusive</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+      <div class="faq-inner">
+        <div class="reveal">
+          <div class="section-label">Questions</div>
+          <h2>Frequently Asked</h2>
+        </div>
+        <br />
+
+        <div class="faq-item reveal">
+          <div class="faq-q">What is an ITIN and who needs one?</div>
+          <div class="faq-a">
+            An ITIN (Individual Taxpayer Identification Number) is a nine-digit
+            number issued by the IRS to individuals who have a US tax filing or
+            reporting requirement but are not eligible for a Social Security
+            Number. This includes foreign nationals earning US income,
+            non-resident spouses of US taxpayers, and foreign investors with US
+            holdings.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">
+            Do I need to be physically present in the US to apply?
+          </div>
+          <div class="faq-a">
+            No. Our service is fully remote. You can complete the entire process
+            — intake, document upload, and e-signature — from anywhere in the
+            world. The only physical component is our certified mail submission
+            to the IRS, which we handle on your behalf.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">What if my ITIN expired? Can you renew it?</div>
+          <div class="faq-a">
+            Yes. ITINs not used on a federal tax return for three consecutive
+            years expire. We handle ITIN renewals through the same W-7 process.
+            When you begin the application, indicate that you are renewing an
+            existing ITIN and provide your prior ITIN number.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">How long does the IRS take to issue an ITIN?</div>
+          <div class="faq-a">
+            The IRS typically processes W-7 applications within 7–11 weeks of
+            receiving them. During peak filing season (January–April),
+            processing can take slightly longer. We monitor your application
+            timeline and notify you when your ITIN is issued.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">
+            Is my $250 refundable if I'm found ineligible?
+          </div>
+          <div class="faq-a">
+            Yes. If our eligibility screener determines you do not qualify
+            before payment, you owe nothing. If you've paid and our review team
+            determines you are ineligible after document review, we will issue a
+            full refund. We will never file an application we believe will be
+            rejected.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">
+            Can I send original documents or do you need copies?
+          </div>
+          <div class="faq-a">
+            You do not need to send original documents through our service. We
+            work with certified copies or high-resolution color scans. Original
+            documents sent directly to the IRS can take months to be returned —
+            our process avoids this risk entirely.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <div class="faq-q">What happens after I submit my application?</div>
+          <div class="faq-a">
+            You'll receive a Case ID and access to your personal client portal.
+            From there, you can track your application stage in real time — from
+            document review through IRS filing to ITIN issuance. We send
+            automated email updates at every milestone.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="cta-section" id="apply">
+      <div class="reveal">
+        <h2>Ready to Get Your ITIN?</h2>
+        <p>
+          The entire application takes under 20 minutes. We handle everything
+          after that.
+        </p>
+        <a href="YOUR_FILLOUT_SCREENER_URL" class="btn-cta-white">
+          Start Your Application →
+        </a>
+        <div class="cta-note">
+          $250 flat fee · Secure & encrypted · IRS-compliant process
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-logo">ITIN<span>Pro</span></div>
+      <div class="footer-disclaimer">
+        This service prepares and submits IRS Form W-7 on behalf of clients. We
+        are not affiliated with or endorsed by the Internal Revenue Service or
+        any government agency. ITIN processing times are determined solely by
+        the IRS. This service does not constitute legal or tax advice.
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+
+    <script>
+      // FAQ toggle
+      document.querySelectorAll(".faq-q").forEach((q) => {
+        q.addEventListener("click", () => {
+          const item = q.parentElement;
+          const wasOpen = item.classList.contains("open");
+          document
+            .querySelectorAll(".faq-item")
+            .forEach((i) => i.classList.remove("open"));
+          if (!wasOpen) item.classList.add("open");
+        });
+      });
+
+      // Scroll reveal
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              // stagger children if needed
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>
