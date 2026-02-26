@@ -1,0 +1,1544 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Documents — ITINPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f0e0c;
+        --cream: #f7f4ee;
+        --warm-white: #fdfcf9;
+        --gold: #c8972b;
+        --gold-light: #e8b84b;
+        --gold-pale: #f5e9cc;
+        --gold-border: rgba(200, 151, 43, 0.3);
+        --sage: #3d5a4a;
+        --sage-light: #5a7a66;
+        --sage-pale: #d6e4db;
+        --sage-border: rgba(61, 90, 74, 0.3);
+        --muted: #6b6760;
+        --border: #e0dbd0;
+        --border2: #ccc8be;
+        --red: #c0392b;
+        --red-pale: #fdf0ee;
+        --red-border: rgba(192, 57, 43, 0.3);
+        --blue: #2563eb;
+        --blue-pale: #eff6ff;
+        --focus: rgba(200, 151, 43, 0.18);
+        --shadow-sm: 0 1px 3px rgba(15,14,12,0.08);
+        --shadow-md: 0 4px 16px rgba(15,14,12,0.10);
+        --shadow-lg: 0 12px 40px rgba(15,14,12,0.12);
+        --radius: 10px;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--warm-white);
+        color: var(--ink);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── NAV ── */
+      nav {
+        background: rgba(253,252,249,0.96);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+      .nav-logo span { color: var(--gold); }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .nav-case {
+        font-family: "DM Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--muted);
+        background: var(--cream);
+        border: 1px solid var(--border);
+        padding: 5px 12px;
+        border-radius: 6px;
+      }
+      .nav-case strong { color: var(--ink); }
+      .nav-help {
+        font-size: 0.82rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-help:hover { color: var(--ink); }
+
+      /* ── PROGRESS ── */
+      .workflow-progress {
+        background: var(--cream);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 48px;
+      }
+      .workflow-steps {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .w-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--muted);
+        flex: 1;
+        position: relative;
+      }
+      .w-step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(100% - 110px);
+        height: 1px;
+        background: var(--border);
+        left: 110px;
+      }
+      .w-step.done::after { background: var(--sage); }
+      .w-step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        background: white;
+      }
+      .w-step.done .w-step-num {
+        background: var(--sage);
+        border-color: var(--sage);
+        color: white;
+      }
+      .w-step.done .w-step-num::after { content: "✓"; font-size: 0.65rem; }
+      .w-step.done .w-step-num span { display: none; }
+      .w-step.active .w-step-num {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: white;
+      }
+      .w-step.active { color: var(--ink); font-weight: 600; }
+
+      /* ── MAIN ── */
+      main {
+        flex: 1;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+        width: 100%;
+      }
+
+      .page-header {
+        margin-bottom: 40px;
+        animation: fadeUp 0.5s ease both;
+      }
+      .page-header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--sage-pale);
+        border: 1px solid var(--sage-border);
+        border-radius: 100px;
+        padding: 5px 14px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--sage);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .page-header-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--sage);
+        border-radius: 50%;
+      }
+      .page-header h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        margin-bottom: 10px;
+        line-height: 1.15;
+      }
+      .page-header p {
+        font-size: 1rem;
+        color: var(--muted);
+        max-width: 520px;
+        line-height: 1.6;
+      }
+
+      /* ── CHECKLIST INTRO ── */
+      .checklist-intro {
+        background: var(--gold-pale);
+        border: 1px solid var(--gold-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-bottom: 32px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        animation: fadeUp 0.5s 0.1s ease both;
+      }
+      .checklist-intro-icon {
+        font-size: 1.4rem;
+        line-height: 1;
+        margin-top: 2px;
+      }
+      .checklist-intro-body h4 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 6px;
+      }
+      .checklist-intro-body p {
+        font-size: 0.83rem;
+        color: #6b5c35;
+        line-height: 1.5;
+      }
+
+      /* ── UPLOAD SECTIONS ── */
+      .upload-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .upload-section {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.2s, border-color 0.2s;
+        animation: fadeUp 0.5s ease both;
+      }
+      .upload-section:hover { box-shadow: var(--shadow-md); }
+      .upload-section.section-complete { border-color: var(--sage-border); }
+      .upload-section.section-required { border-color: var(--gold-border); }
+
+      .section-header {
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+      }
+      .section-header:hover { background: var(--cream); }
+      .section-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--cream);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .section-complete .section-icon {
+        background: var(--sage-pale);
+        border-color: var(--sage-border);
+      }
+      .section-title {
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 2px;
+      }
+      .section-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-req-badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 100px;
+      }
+      .badge-required {
+        background: var(--gold-pale);
+        color: #8a6520;
+        border: 1px solid var(--gold-border);
+      }
+      .badge-conditional {
+        background: var(--blue-pale);
+        color: var(--blue);
+        border: 1px solid rgba(37,99,235,0.2);
+      }
+      .badge-done {
+        background: var(--sage-pale);
+        color: var(--sage);
+        border: 1px solid var(--sage-border);
+      }
+      .section-file-count {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+      }
+      .section-chevron {
+        color: var(--muted);
+        transition: transform 0.25s;
+        font-size: 0.9rem;
+      }
+      .section-header.open .section-chevron { transform: rotate(180deg); }
+
+      .section-body {
+        display: none;
+        padding: 20px 24px 24px;
+      }
+      .section-body.open { display: block; }
+
+      .section-description {
+        font-size: 0.84rem;
+        color: var(--muted);
+        margin-bottom: 16px;
+        line-height: 1.55;
+      }
+      .section-description strong { color: var(--ink); }
+
+      /* ── DROP ZONE ── */
+      .drop-zone {
+        border: 2px dashed var(--border2);
+        border-radius: 8px;
+        padding: 28px 20px;
+        text-align: center;
+        background: var(--cream);
+        transition: all 0.2s;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .drop-zone:hover, .drop-zone.drag-over {
+        border-color: var(--gold);
+        background: var(--gold-pale);
+      }
+      .drop-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .drop-zone-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+      }
+      .drop-zone-text {
+        font-size: 0.88rem;
+        color: var(--ink);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .drop-zone-sub {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .drop-zone-formats {
+        margin-top: 10px;
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+      }
+
+      /* ── FILE LIST ── */
+      .file-list {
+        margin-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .file-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+        animation: fileIn 0.3s ease both;
+      }
+      @keyframes fileIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .file-item.uploading { border-color: var(--gold-border); }
+      .file-item.upload-done { border-color: var(--sage-border); background: #fafffe; }
+      .file-item.upload-error { border-color: var(--red-border); background: var(--red-pale); }
+      .file-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 7px;
+        background: var(--cream);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+      .file-icon.pdf { background: #fff0ee; border-color: rgba(192,57,43,0.2); }
+      .file-icon.image { background: #f0f4ff; border-color: rgba(37,99,235,0.15); }
+      .file-details { flex: 1; min-width: 0; }
+      .file-name {
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .file-size {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-top: 1px;
+      }
+      .file-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .file-status.uploading { color: var(--gold); }
+      .file-status.done { color: var(--sage); }
+      .file-status.error { color: var(--red); }
+      .file-progress-bar {
+        width: 60px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .file-progress-fill {
+        height: 100%;
+        background: var(--gold);
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .file-remove {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: color 0.15s, background 0.15s;
+        font-size: 1rem;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .file-remove:hover { color: var(--red); background: var(--red-pale); }
+
+      /* ── TIPS ── */
+      .upload-tips {
+        margin-top: 14px;
+        background: var(--blue-pale);
+        border: 1px solid rgba(37,99,235,0.18);
+        border-radius: 8px;
+        padding: 12px 16px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .upload-tips-icon { font-size: 0.9rem; margin-top: 1px; }
+      .upload-tips p {
+        font-size: 0.78rem;
+        color: #1e40af;
+        line-height: 1.5;
+      }
+      .upload-tips p strong { color: #1e3a8a; }
+
+      /* ── OVERALL STATUS PANEL ── */
+      .status-panel {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -8px 30px rgba(15,14,12,0.08);
+        padding: 16px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        z-index: 50;
+        transition: transform 0.3s;
+      }
+      .status-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .status-ring {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .status-ring svg {
+        transform: rotate(-90deg);
+      }
+      .status-ring-bg { fill: none; stroke: var(--border); stroke-width: 3; }
+      .status-ring-fill {
+        fill: none;
+        stroke: var(--gold);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 113;
+        stroke-dashoffset: 113;
+        transition: stroke-dashoffset 0.6s ease, stroke 0.3s;
+      }
+      .status-ring-fill.complete { stroke: var(--sage); stroke-dashoffset: 0; }
+      .status-ring-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--ink);
+        font-family: "DM Mono", monospace;
+      }
+      .status-text h4 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 2px;
+      }
+      .status-text p {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .status-items {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .status-item-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--muted);
+        background: white;
+        transition: all 0.2s;
+        cursor: default;
+        position: relative;
+      }
+      .status-item-dot.has-file {
+        border-color: var(--sage);
+        background: var(--sage-pale);
+        color: var(--sage);
+      }
+      .status-item-dot[title]:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        background: var(--ink);
+        color: white;
+        font-size: 0.68rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .btn-submit {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 13px 28px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        box-shadow: var(--shadow-md);
+        flex-shrink: 0;
+      }
+      .btn-submit:hover:not(:disabled) {
+        background: var(--sage);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+      }
+      .btn-submit:active:not(:disabled) { transform: translateY(0); }
+      .btn-submit:disabled {
+        background: var(--muted);
+        cursor: not-allowed;
+        opacity: 0.6;
+        box-shadow: none;
+      }
+      .btn-submit-arrow { font-size: 1rem; transition: transform 0.2s; }
+      .btn-submit:hover:not(:disabled) .btn-submit-arrow { transform: translateX(3px); }
+
+      /* ── SUCCESS SCREEN ── */
+      #successScreen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 80px 24px;
+        animation: fadeUp 0.6s ease both;
+        flex: 1;
+      }
+      #successScreen.visible { display: flex; }
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--sage-pale);
+        border: 2px solid var(--sage-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 28px;
+      }
+      .success-case {
+        font-family: "DM Mono", monospace;
+        font-size: 0.85rem;
+        background: var(--cream);
+        border: 1px solid var(--border);
+        padding: 8px 20px;
+        border-radius: 8px;
+        display: inline-block;
+        margin: 20px auto 0;
+        color: var(--muted);
+      }
+      .success-case strong { color: var(--ink); }
+      .success-next-steps {
+        margin-top: 36px;
+        text-align: left;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: var(--shadow-sm);
+      }
+      .success-next-steps h4 {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 14px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+      }
+      .next-step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .next-step-item:last-child { border-bottom: none; }
+      .next-step-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--gold-pale);
+        border: 1px solid var(--gold-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #8a6520;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .next-step-text {
+        font-size: 0.84rem;
+        color: var(--ink);
+        line-height: 1.45;
+      }
+      .next-step-text span { color: var(--muted); font-size: 0.78rem; display: block; margin-top: 2px; }
+
+      /* ── ANIMATIONS ── */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      /* ── PASSPORT PHYSICAL NOTICE ── */
+      .passport-physical-notice {
+        background: linear-gradient(135deg, #fff8ed 0%, #fff3e0 100%);
+        border: 1.5px solid #e8a020;
+        border-radius: 10px;
+        padding: 20px 20px 18px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        position: relative;
+        overflow: hidden;
+      }
+      .passport-physical-notice::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #e8a020, #c8972b, #e8b84b);
+      }
+      .passport-notice-icon {
+        font-size: 1.6rem;
+        line-height: 1;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .passport-notice-content { flex: 1; }
+      .passport-notice-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #7a4a0a;
+        margin-bottom: 7px;
+        letter-spacing: -0.01em;
+      }
+      .passport-notice-body {
+        font-size: 0.84rem;
+        color: #5c3a0a;
+        line-height: 1.6;
+        margin-bottom: 14px;
+      }
+      .passport-notice-body strong { color: #3d2205; }
+      .passport-notice-address {
+        background: rgba(255,255,255,0.7);
+        border: 1px solid rgba(232,160,32,0.35);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+      }
+      .passport-notice-address-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #8a6520;
+        margin-bottom: 6px;
+      }
+      .passport-notice-address-text {
+        font-family: "DM Mono", monospace;
+        font-size: 0.8rem;
+        color: #3d2205;
+        line-height: 1.7;
+      }
+      .passport-notice-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .notice-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid rgba(232,160,32,0.4);
+        border-radius: 100px;
+        padding: 4px 11px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #7a4a0a;
+      }
+
+      /* ── MOBILE ── */
+      @media (max-width: 640px) {
+        nav { padding: 14px 16px; }
+        .workflow-progress { padding: 12px 16px; }
+        .workflow-steps { gap: 0; }
+        .w-step span { display: none; }
+        .w-step:not(:last-child)::after { display: none; }
+        main { padding: 28px 16px 100px; }
+        .status-panel { padding: 14px 16px; flex-wrap: wrap; }
+        .status-items { display: none; }
+        .page-header h1 { font-size: 1.75rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- NAV -->
+    <nav>
+      <a href="index.html" class="nav-logo">ITIN<span>Pro</span></a>
+      <div class="nav-right">
+        <div class="nav-case" id="navCaseId">Case <strong>—</strong></div>
+        <a href="#" class="nav-help">Need help?</a>
+      </div>
+    </nav>
+
+    <!-- WORKFLOW PROGRESS -->
+    <div class="workflow-progress">
+      <div class="workflow-steps">
+        <div class="w-step done">
+          <div class="w-step-num"><span>1</span></div>
+          <span>Screener</span>
+        </div>
+        <div class="w-step done">
+          <div class="w-step-num"><span>2</span></div>
+          <span>Intake Form</span>
+        </div>
+        <div class="w-step active">
+          <div class="w-step-num"><span>3</span></div>
+          <span>Documents</span>
+        </div>
+        <div class="w-step">
+          <div class="w-step-num"><span>4</span></div>
+          <span>Payment</span>
+        </div>
+        <div class="w-step">
+          <div class="w-step-num"><span>5</span></div>
+          <span>Review</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <main id="mainContent">
+      <div class="page-header">
+        <div class="page-header-badge">Step 3 of 5</div>
+        <h1>Upload Your Documents</h1>
+        <p>Securely upload your supporting documents below. All files are encrypted and stored with your case ID. Required documents are marked.</p>
+      </div>
+
+      <div class="checklist-intro" style="border-color: #e8a020; background: #fff8ed; animation-delay:0.05s">
+        <div class="checklist-intro-icon">⚠️</div>
+        <div class="checklist-intro-body">
+          <h4 style="color:#7a4a0a;">Original Passport Required — Physical Submission to Bangalore Office</h4>
+          <p style="color:#5c3a0a;">The IRS requires your <strong style="color:#3d2205">original passport</strong> to be submitted as identity proof. You must courier or hand-deliver it to our Bangalore office. All other documents can be uploaded digitally below.</p>
+        </div>
+      </div>
+
+      <div class="checklist-intro">
+        <div class="checklist-intro-icon">📋</div>
+        <div class="checklist-intro-body">
+          <h4>Before you upload</h4>
+          <p>Ensure each document is clear and fully visible — no cropped edges, no blurry photos, no expired documents. Passport must be within 6 months of expiry. JPG, PNG, and PDF files accepted. Max 10MB per file.</p>
+        </div>
+      </div>
+
+      <div class="upload-sections" id="uploadSections">
+
+        <!-- SECTION 1: Passport -->
+        <div class="upload-section section-required" id="sec-passport" style="animation-delay: 0.05s">
+          <div class="section-header open" onclick="toggleSection(this)">
+            <div class="section-header-left">
+              <div class="section-icon">🛂</div>
+              <div>
+                <div class="section-title">Passport (Bio Data Page)</div>
+                <div class="section-meta">
+                  <span class="section-req-badge badge-required">Required</span>
+                  <span class="section-file-count" id="count-passport">0 of 1 uploaded</span>
+                </div>
+              </div>
+            </div>
+            <span class="section-chevron">▾</span>
+          </div>
+          <div class="section-body open" id="body-passport">
+
+            <!-- ⚠️ PHYSICAL SUBMISSION NOTICE -->
+            <div class="passport-physical-notice">
+              <div class="passport-notice-icon">📮</div>
+              <div class="passport-notice-content">
+                <div class="passport-notice-title">Original Passport Must Be Physically Submitted</div>
+                <p class="passport-notice-body">
+                  The IRS requires your <strong>original passport</strong> (or a certified copy) as proof of identity. You must courier or hand-deliver your original passport to our Bangalore office. It will be returned to you after filing — typically within <strong>3–5 business days</strong>.
+                </p>
+                <div class="passport-notice-address">
+                  <div class="passport-notice-address-label">📍 Drop-off / Courier Address</div>
+                  <div class="passport-notice-address-text">
+                    ITINPro Processing Center<br/>
+                    [Your Office Address], Bangalore,<br/>
+                    Karnataka — 560 001, India
+                  </div>
+                </div>
+                <div class="passport-notice-chips">
+                  <span class="notice-chip">📦 Use a tracked courier service</span>
+                  <span class="notice-chip">🔒 Passport returned after filing</span>
+                  <span class="notice-chip">📞 Call us before drop-off</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="section-description" style="margin-top:16px;">Meanwhile, also upload a <strong>digital scan of your passport bio data page</strong> below so your reviewer can begin processing immediately — before the original arrives.</p>
+            <div class="drop-zone" id="dz-passport" data-section="passport" data-max-files="1">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'passport')" multiple />
+              <span class="drop-zone-icon">📄</span>
+              <div class="drop-zone-text">Upload a scan or photo of your passport bio data page</div>
+              <div class="drop-zone-sub">Clear, in-focus, all 4 corners visible</div>
+              <div class="drop-zone-formats">PDF · JPG · PNG · max 10MB</div>
+            </div>
+            <div class="file-list" id="files-passport"></div>
+            <div class="upload-tips">
+              <span class="upload-tips-icon">💡</span>
+              <p><strong>Tip:</strong> Use your phone camera in document mode for the best scan quality. Avoid photographing in low light or at an angle.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Visa -->
+        <div class="upload-section section-required" id="sec-visa" style="animation-delay: 0.1s">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-header-left">
+              <div class="section-icon">✈️</div>
+              <div>
+                <div class="section-title">US Visa / Entry Stamp</div>
+                <div class="section-meta">
+                  <span class="section-req-badge badge-required">Required</span>
+                  <span class="section-file-count" id="count-visa">0 of 1 uploaded</span>
+                </div>
+              </div>
+            </div>
+            <span class="section-chevron">▾</span>
+          </div>
+          <div class="section-body" id="body-visa">
+            <p class="section-description">Upload a photo of your current <strong>US visa stamp</strong> or entry stamp in your passport. If you are on a visa waiver, upload your ESTA confirmation or I-94 instead.</p>
+            <div class="drop-zone" id="dz-visa" data-section="visa" data-max-files="2">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'visa')" multiple />
+              <span class="drop-zone-icon">📄</span>
+              <div class="drop-zone-text">Drop file here or click to browse</div>
+              <div class="drop-zone-sub">Visa page or I-94 printout accepted</div>
+              <div class="drop-zone-formats">PDF · JPG · PNG · max 10MB</div>
+            </div>
+            <div class="file-list" id="files-visa"></div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Tax / Income Document -->
+        <div class="upload-section section-required" id="sec-tax" style="animation-delay: 0.15s">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-header-left">
+              <div class="section-icon">💰</div>
+              <div>
+                <div class="section-title">US Tax / Income Document</div>
+                <div class="section-meta">
+                  <span class="section-req-badge badge-required">Required</span>
+                  <span class="section-file-count" id="count-tax">0 of 1 uploaded</span>
+                </div>
+              </div>
+            </div>
+            <span class="section-chevron">▾</span>
+          </div>
+          <div class="section-body" id="body-tax">
+            <p class="section-description">Upload your primary US tax/income document: <strong>W-2, 1099, 1042-S, or a letter from your withholding agent</strong>. This establishes your need for an ITIN. You can also upload a signed federal tax return if applicable.</p>
+            <div class="drop-zone" id="dz-tax" data-section="tax" data-max-files="3">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'tax')" multiple />
+              <span class="drop-zone-icon">📄</span>
+              <div class="drop-zone-text">Drop document here or click to browse</div>
+              <div class="drop-zone-sub">W-2, 1099, 1042-S, tax return accepted</div>
+              <div class="drop-zone-formats">PDF · JPG · PNG · max 10MB</div>
+            </div>
+            <div class="file-list" id="files-tax"></div>
+            <div class="upload-tips">
+              <span class="upload-tips-icon">💡</span>
+              <p><strong>Not sure what to upload?</strong> If you received US rental income, upload your lease agreement and bank statement. If it's investment income, a 1099-DIV or brokerage statement works.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Supporting ID (Conditional) -->
+        <div class="upload-section" id="sec-id" style="animation-delay: 0.2s">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-header-left">
+              <div class="section-icon">🪪</div>
+              <div>
+                <div class="section-title">Secondary ID Document</div>
+                <div class="section-meta">
+                  <span class="section-req-badge badge-conditional">If applicable</span>
+                  <span class="section-file-count" id="count-id">0 files uploaded</span>
+                </div>
+              </div>
+            </div>
+            <span class="section-chevron">▾</span>
+          </div>
+          <div class="section-body" id="body-id">
+            <p class="section-description">If your passport name differs from your income documents, or if the IRS requires a second ID, upload a <strong>national ID, driver's license, or birth certificate</strong> here. This is optional unless requested by your reviewer.</p>
+            <div class="drop-zone" id="dz-id" data-section="id" data-max-files="2">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'id')" multiple />
+              <span class="drop-zone-icon">📄</span>
+              <div class="drop-zone-text">Drop file here or click to browse</div>
+              <div class="drop-zone-sub">National ID, driver's license, or birth certificate</div>
+              <div class="drop-zone-formats">PDF · JPG · PNG · max 10MB</div>
+            </div>
+            <div class="file-list" id="files-id"></div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Additional Documents -->
+        <div class="upload-section" id="sec-other" style="animation-delay: 0.25s">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-header-left">
+              <div class="section-icon">📎</div>
+              <div>
+                <div class="section-title">Additional Documents</div>
+                <div class="section-meta">
+                  <span class="section-req-badge badge-conditional">Optional</span>
+                  <span class="section-file-count" id="count-other">0 files uploaded</span>
+                </div>
+              </div>
+            </div>
+            <span class="section-chevron">▾</span>
+          </div>
+          <div class="section-body" id="body-other">
+            <p class="section-description">Upload anything else relevant to your application — <strong>I-20, DS-2019, EAD card, prior year tax return, or an explanation letter</strong>. These help your reviewer process your case faster.</p>
+            <div class="drop-zone" id="dz-other" data-section="other" data-max-files="5">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'other')" multiple />
+              <span class="drop-zone-icon">📎</span>
+              <div class="drop-zone-text">Any supporting documents</div>
+              <div class="drop-zone-sub">I-20, DS-2019, EAD, explanation letters, etc.</div>
+              <div class="drop-zone-formats">PDF · JPG · PNG · max 10MB · up to 5 files</div>
+            </div>
+            <div class="file-list" id="files-other"></div>
+          </div>
+        </div>
+
+      </div><!-- /upload-sections -->
+    </main>
+
+    <!-- SUCCESS SCREEN -->
+    <div id="successScreen">
+      <div class="success-icon">✅</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:10px;">Documents Submitted</h2>
+      <p style="font-size:1rem;color:var(--muted);max-width:440px;line-height:1.6;">Your documents have been securely uploaded and linked to your case. Your reviewer has been notified and will begin the verification process.</p>
+      <div class="success-case" id="successCaseId">Case ID: <strong>—</strong></div>
+      <div class="success-next-steps">
+        <h4>What happens next</h4>
+        <div class="next-step-item">
+          <div class="next-step-num">1</div>
+          <div class="next-step-text">Complete payment to activate your case<span>You'll receive a payment link via email within minutes</span></div>
+        </div>
+        <div class="next-step-item">
+          <div class="next-step-num">2</div>
+          <div class="next-step-text">Document review begins<span>Our team verifies your documents — typically within 1 business day</span></div>
+        </div>
+        <div class="next-step-item">
+          <div class="next-step-num">3</div>
+          <div class="next-step-text">W-7 draft sent for your e-signature<span>You'll review and sign the completed W-7 form electronically</span></div>
+        </div>
+        <div class="next-step-item">
+          <div class="next-step-num">4</div>
+          <div class="next-step-text">Filing & ITIN delivery<span>We courier to the IRS CAA address. ITIN arrives in 7–11 weeks</span></div>
+        </div>
+      </div>
+      <div style="margin-top:28px;">
+        <a href="payment.html" id="proceedToPaymentBtn" style="display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:white;font-size:0.9rem;font-weight:700;padding:14px 32px;border-radius:8px;text-decoration:none;box-shadow:var(--shadow-md);transition:background 0.2s,transform 0.1s;">
+          Proceed to Payment <span>→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-panel" id="statusPanel">
+      <div class="status-left">
+        <div class="status-ring">
+          <svg viewBox="0 0 44 44" width="44" height="44">
+            <circle class="status-ring-bg" cx="22" cy="22" r="18"/>
+            <circle class="status-ring-fill" id="progressRing" cx="22" cy="22" r="18"/>
+          </svg>
+          <div class="status-ring-text" id="progressText">0/3</div>
+        </div>
+        <div class="status-text">
+          <h4 id="statusTitle">3 required documents needed</h4>
+          <p id="statusSub">Upload passport, visa, and tax document to continue</p>
+        </div>
+      </div>
+      <div class="status-items" id="statusDots"></div>
+      <button class="btn-submit" id="submitBtn" onclick="submitDocuments()" disabled>
+        <span id="submitBtnText">Submit Documents</span>
+        <span class="btn-submit-arrow" id="submitArrow">→</span>
+      </button>
+    </div>
+
+    <script>
+      // ═══════════════════════════════════════════════
+      //  STATE
+      // ═══════════════════════════════════════════════
+      const SECTIONS = {
+        passport: { label: 'Passport', required: true, maxFiles: 1, files: [] },
+        visa:     { label: 'Visa/Entry', required: true, maxFiles: 2, files: [] },
+        tax:      { label: 'Tax Doc', required: true, maxFiles: 3, files: [] },
+        id:       { label: 'Secondary ID', required: false, maxFiles: 2, files: [] },
+        other:    { label: 'Additional', required: false, maxFiles: 5, files: [] },
+      };
+      let caseId = '';
+      let userEmail = '';
+      let isSubmitting = false;
+
+      // ═══════════════════════════════════════════════
+      //  INIT
+      // ═══════════════════════════════════════════════
+      document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        caseId = params.get('case_id') || generateCaseId();
+        userEmail = params.get('email') || '';
+
+        // Update nav
+        document.getElementById('navCaseId').innerHTML = `Case <strong>${caseId}</strong>`;
+
+        // Setup drag-drop for all zones
+        Object.keys(SECTIONS).forEach(sectionKey => {
+          setupDragDrop(sectionKey);
+        });
+
+        // Build status dots
+        buildStatusDots();
+        updateStatus();
+      });
+
+      function generateCaseId() {
+        const yr = new Date().getFullYear().toString().slice(-2);
+        const rnd = Math.random().toString(36).substring(2, 7).toUpperCase();
+        return `ITIN-${yr}-${rnd}`;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  SECTION TOGGLE
+      // ═══════════════════════════════════════════════
+      function toggleSection(headerEl) {
+        const isOpen = headerEl.classList.contains('open');
+        const sectionEl = headerEl.closest('.upload-section');
+        const sectionId = sectionEl.id.replace('sec-', '');
+        const bodyEl = document.getElementById('body-' + sectionId);
+
+        headerEl.classList.toggle('open', !isOpen);
+        bodyEl.classList.toggle('open', !isOpen);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  DRAG & DROP
+      // ═══════════════════════════════════════════════
+      function setupDragDrop(sectionKey) {
+        const dz = document.getElementById('dz-' + sectionKey);
+        if (!dz) return;
+
+        dz.addEventListener('dragover', e => {
+          e.preventDefault();
+          dz.classList.add('drag-over');
+        });
+        dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+        dz.addEventListener('drop', e => {
+          e.preventDefault();
+          dz.classList.remove('drag-over');
+          const files = Array.from(e.dataTransfer.files);
+          files.forEach(f => addFile(sectionKey, f));
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FILE HANDLING
+      // ═══════════════════════════════════════════════
+      function handleFileSelect(event, sectionKey) {
+        const files = Array.from(event.target.files);
+        files.forEach(f => addFile(sectionKey, f));
+        event.target.value = ''; // reset so same file can be re-added
+      }
+
+      function addFile(sectionKey, file) {
+        const section = SECTIONS[sectionKey];
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+        // Validate
+        if (!['application/pdf','image/jpeg','image/png'].includes(file.type) &&
+            !file.name.match(/\.(pdf|jpg|jpeg|png)$/i)) {
+          showToast('Only PDF, JPG, and PNG files are accepted.', 'error');
+          return;
+        }
+        if (file.size > MAX_SIZE) {
+          showToast(`${file.name} exceeds the 10MB limit.`, 'error');
+          return;
+        }
+        if (section.files.length >= section.maxFiles) {
+          showToast(`Max ${section.maxFiles} file${section.maxFiles > 1 ? 's' : ''} for this section.`, 'error');
+          return;
+        }
+
+        // Check duplicate
+        if (section.files.find(f => f.name === file.name && f.size === file.size)) {
+          showToast(`${file.name} is already added.`, 'error');
+          return;
+        }
+
+        const fileObj = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          file: file,
+          status: 'pending', // pending | uploading | done | error
+          progress: 0,
+        };
+        section.files.push(fileObj);
+        renderFileItem(sectionKey, fileObj);
+        updateSectionCount(sectionKey);
+        updateStatus();
+        simulateUpload(sectionKey, fileObj);
+      }
+
+      function removeFile(sectionKey, fileId) {
+        const section = SECTIONS[sectionKey];
+        const idx = section.files.findIndex(f => f.id === fileId);
+        if (idx > -1) section.files.splice(idx, 1);
+        const el = document.getElementById('file-' + fileId);
+        if (el) el.remove();
+        updateSectionCount(sectionKey);
+        updateStatus();
+        checkSectionComplete(sectionKey);
+      }
+
+      function renderFileItem(sectionKey, fileObj) {
+        const list = document.getElementById('files-' + sectionKey);
+        const isPdf = fileObj.type === 'application/pdf' || fileObj.name.endsWith('.pdf');
+        const iconClass = isPdf ? 'pdf' : 'image';
+        const iconEmoji = isPdf ? '📄' : '🖼';
+        const sizeStr = formatBytes(fileObj.size);
+
+        const el = document.createElement('div');
+        el.className = 'file-item uploading';
+        el.id = 'file-' + fileObj.id;
+        el.innerHTML = `
+          <div class="file-icon ${iconClass}">${iconEmoji}</div>
+          <div class="file-details">
+            <div class="file-name">${escHtml(fileObj.name)}</div>
+            <div class="file-size">${sizeStr}</div>
+          </div>
+          <div class="file-status uploading" id="status-${fileObj.id}">
+            <div class="file-progress-bar"><div class="file-progress-fill" id="prog-${fileObj.id}"></div></div>
+            <span id="statuslabel-${fileObj.id}">Uploading</span>
+          </div>
+          <button class="file-remove" onclick="removeFile('${sectionKey}', ${fileObj.id})" title="Remove">✕</button>
+        `;
+        list.appendChild(el);
+      }
+
+      function simulateUpload(sectionKey, fileObj) {
+        // Simulate upload progress (in production, replace with real fetch/FormData upload)
+        let progress = 0;
+        const progEl = document.getElementById('prog-' + fileObj.id);
+        const statusEl = document.getElementById('status-' + fileObj.id);
+        const labelEl = document.getElementById('statuslabel-' + fileObj.id);
+        const itemEl = document.getElementById('file-' + fileObj.id);
+
+        // Vary speed based on file size for realism
+        const duration = Math.min(2000 + fileObj.size / 50000, 4000);
+        const steps = 30;
+        const interval = duration / steps;
+
+        fileObj.status = 'uploading';
+
+        const timer = setInterval(() => {
+          progress += (100 / steps) + (Math.random() * 5 - 2);
+          progress = Math.min(progress, 98);
+          if (progEl) progEl.style.width = progress + '%';
+        }, interval);
+
+        setTimeout(() => {
+          clearInterval(timer);
+          progress = 100;
+          if (progEl) progEl.style.width = '100%';
+          fileObj.status = 'done';
+          fileObj.progress = 100;
+
+          if (itemEl) itemEl.className = 'file-item upload-done';
+          if (statusEl) statusEl.className = 'file-status done';
+          if (labelEl) labelEl.textContent = '✓ Ready';
+          if (progEl) progEl.style.background = 'var(--sage)';
+
+          checkSectionComplete(sectionKey);
+          updateStatus();
+        }, duration);
+      }
+
+      function checkSectionComplete(sectionKey) {
+        const section = SECTIONS[sectionKey];
+        const hasFiles = section.files.length > 0;
+        const allDone = section.files.every(f => f.status === 'done');
+        const secEl = document.getElementById('sec-' + sectionKey);
+
+        if (hasFiles && allDone) {
+          secEl.classList.add('section-complete');
+          const badge = secEl.querySelector('.section-req-badge');
+          if (section.required && badge) {
+            badge.className = 'section-req-badge badge-done';
+            badge.textContent = '✓ Uploaded';
+          }
+        } else {
+          secEl.classList.remove('section-complete');
+          const badge = secEl.querySelector('.section-req-badge');
+          if (section.required && badge && badge.textContent === '✓ Uploaded') {
+            badge.className = 'section-req-badge badge-required';
+            badge.textContent = 'Required';
+          }
+        }
+      }
+
+      function updateSectionCount(sectionKey) {
+        const section = SECTIONS[sectionKey];
+        const countEl = document.getElementById('count-' + sectionKey);
+        if (!countEl) return;
+        const n = section.files.length;
+        if (section.required) {
+          countEl.textContent = `${n} of ${section.maxFiles === 1 ? 1 : n > 0 ? n : 1} uploaded`;
+        } else {
+          countEl.textContent = `${n} file${n !== 1 ? 's' : ''} uploaded`;
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  STATUS BAR
+      // ═══════════════════════════════════════════════
+      const REQUIRED_SECTIONS = ['passport', 'visa', 'tax'];
+
+      function buildStatusDots() {
+        const container = document.getElementById('statusDots');
+        REQUIRED_SECTIONS.forEach((key, i) => {
+          const dot = document.createElement('div');
+          dot.className = 'status-item-dot';
+          dot.id = 'dot-' + key;
+          dot.setAttribute('title', SECTIONS[key].label);
+          dot.textContent = i + 1;
+          container.appendChild(dot);
+        });
+      }
+
+      function updateStatus() {
+        const completedRequired = REQUIRED_SECTIONS.filter(k => {
+          const s = SECTIONS[k];
+          return s.files.length > 0 && s.files.some(f => f.status === 'done');
+        });
+        const total = REQUIRED_SECTIONS.length;
+        const done = completedRequired.length;
+        const allReady = done === total;
+
+        // Update ring
+        const ring = document.getElementById('progressRing');
+        const circumference = 113;
+        const offset = circumference - (done / total) * circumference;
+        ring.style.strokeDashoffset = offset;
+        if (allReady) ring.classList.add('complete');
+        else ring.classList.remove('complete');
+
+        document.getElementById('progressText').textContent = `${done}/${total}`;
+
+        // Update dots
+        REQUIRED_SECTIONS.forEach(k => {
+          const dot = document.getElementById('dot-' + k);
+          const s = SECTIONS[k];
+          if (s.files.length > 0 && s.files.some(f => f.status === 'done')) {
+            dot.classList.add('has-file');
+            dot.textContent = '✓';
+          } else {
+            dot.classList.remove('has-file');
+            dot.textContent = REQUIRED_SECTIONS.indexOf(k) + 1;
+          }
+        });
+
+        // Update text
+        const titleEl = document.getElementById('statusTitle');
+        const subEl = document.getElementById('statusSub');
+        const btn = document.getElementById('submitBtn');
+
+        if (allReady) {
+          titleEl.textContent = 'All required documents ready';
+          subEl.textContent = 'Review your uploads above, then submit to continue';
+          btn.disabled = false;
+        } else {
+          const remaining = REQUIRED_SECTIONS.filter(k => {
+            const s = SECTIONS[k];
+            return !(s.files.length > 0 && s.files.some(f => f.status === 'done'));
+          });
+          const labels = remaining.map(k => SECTIONS[k].label.toLowerCase()).join(', ');
+          titleEl.textContent = `${total - done} required document${total - done > 1 ? 's' : ''} still needed`;
+          subEl.textContent = `Still needed: ${labels}`;
+          btn.disabled = true;
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  SUBMIT
+      // ═══════════════════════════════════════════════
+      function submitDocuments() {
+        if (isSubmitting) return;
+
+        // Check all uploads are done
+        const allUploads = Object.values(SECTIONS).flatMap(s => s.files);
+        const stillUploading = allUploads.filter(f => f.status === 'uploading');
+        if (stillUploading.length > 0) {
+          showToast('Please wait for all files to finish uploading.', 'error');
+          return;
+        }
+
+        isSubmitting = true;
+        const btn = document.getElementById('submitBtn');
+        const arrow = document.getElementById('submitArrow');
+        document.getElementById('submitBtnText').textContent = 'Submitting…';
+        btn.disabled = true;
+        arrow.innerHTML = '<span class="spinner"></span>';
+
+        // Build payload
+        const payload = {
+          case_id: caseId,
+          email: userEmail,
+          submitted_at: new Date().toISOString(),
+          documents: {},
+        };
+        Object.entries(SECTIONS).forEach(([key, section]) => {
+          payload.documents[key] = section.files.map(f => ({
+            name: f.name,
+            size: f.size,
+            type: f.type,
+          }));
+        });
+
+        // Send to Make.com webhook (replace with actual URL)
+        const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_DOCUMENTS';
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(() => {
+          // Silently fail — log on Make.com side
+        });
+
+        // After brief delay, show success
+        setTimeout(() => {
+          document.getElementById('mainContent').style.display = 'none';
+          document.getElementById('statusPanel').style.display = 'none';
+          const successScreen = document.getElementById('successScreen');
+          successScreen.classList.add('visible');
+          document.getElementById('successCaseId').innerHTML = `Case ID: <strong>${caseId}</strong>`;
+
+          // Update payment link
+          const payBtn = document.getElementById('proceedToPaymentBtn');
+          if (payBtn) payBtn.href = `payment.html?case_id=${caseId}&email=${encodeURIComponent(userEmail)}`;
+
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 1200);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  TOAST
+      // ═══════════════════════════════════════════════
+      let toastTimer;
+      function showToast(msg, type = 'info') {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'toast';
+          toast.style.cssText = `
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            background: var(--ink); color: white; font-size: 0.83rem; font-weight: 600;
+            padding: 10px 20px; border-radius: 8px; z-index: 999; white-space: nowrap;
+            box-shadow: var(--shadow-lg); transition: opacity 0.3s;
+            font-family: "DM Sans", sans-serif;
+          `;
+          document.body.appendChild(toast);
+        }
+        if (type === 'error') toast.style.background = 'var(--red)';
+        else toast.style.background = 'var(--ink)';
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  UTILS
+      // ═══════════════════════════════════════════════
+      function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      function escHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+    </script>
+  </body>
+</html>
