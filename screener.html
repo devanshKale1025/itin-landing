@@ -1,0 +1,1459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check Your Eligibility — ITINPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f0e0c;
+        --cream: #f7f4ee;
+        --warm-white: #fdfcf9;
+        --gold: #c8972b;
+        --gold-light: #e8b84b;
+        --gold-pale: #f5e9cc;
+        --gold-border: rgba(200, 151, 43, 0.3);
+        --sage: #3d5a4a;
+        --sage-light: #5a7a66;
+        --sage-pale: #d6e4db;
+        --muted: #6b6760;
+        --border: #e0dbd0;
+        --red: #c0392b;
+        --red-pale: #fdf0ee;
+        --red-border: rgba(192, 57, 43, 0.25);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--warm-white);
+        color: var(--ink);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── NAV ── */
+      nav {
+        background: rgba(253, 252, 249, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 18px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+      .nav-logo span {
+        color: var(--gold);
+      }
+
+      .nav-back {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-back:hover {
+        color: var(--ink);
+      }
+      .nav-back svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── PROGRESS BAR ── */
+      .progress-track {
+        background: var(--border);
+        height: 3px;
+        width: 100%;
+        position: relative;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--sage), var(--gold));
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 0%;
+      }
+
+      /* ── MAIN LAYOUT ── */
+      .shell {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        min-height: calc(100vh - 61px);
+      }
+
+      /* ── LEFT PANEL ── */
+      .left-panel {
+        padding: 64px 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+
+      /* Step indicator */
+      .step-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 40px;
+      }
+
+      .step-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      .step-dot.active {
+        background: var(--gold);
+        transform: scale(1.3);
+      }
+      .step-dot.done {
+        background: var(--sage);
+      }
+
+      .step-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        margin-left: 8px;
+      }
+
+      /* Question area */
+      .question-wrap {
+        position: relative;
+        min-height: 340px;
+      }
+
+      .question-slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        opacity: 0;
+        transform: translateX(40px);
+        transition:
+          opacity 0.4s ease,
+          transform 0.4s ease;
+        pointer-events: none;
+      }
+
+      .question-slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: all;
+        position: relative;
+      }
+
+      .question-slide.exit {
+        opacity: 0;
+        transform: translateX(-40px);
+      }
+
+      .q-eyebrow {
+        font-family: "DM Mono", monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 16px;
+      }
+
+      .q-text {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+        font-weight: 700;
+        line-height: 1.25;
+        color: var(--ink);
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+      }
+
+      .q-sub {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 36px;
+        max-width: 460px;
+      }
+
+      /* Options */
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-width: 520px;
+      }
+
+      .option-btn {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 22px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--ink);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .option-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--gold-pale);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .option-btn:hover {
+        border-color: var(--gold);
+        box-shadow: 0 4px 16px rgba(200, 151, 43, 0.12);
+        transform: translateY(-1px);
+      }
+      .option-btn:hover::before {
+        opacity: 1;
+      }
+
+      .option-btn.selected {
+        border-color: var(--sage);
+        background: var(--sage-pale);
+        box-shadow: 0 4px 16px rgba(61, 90, 74, 0.12);
+      }
+
+      .option-btn.selected::before {
+        opacity: 0;
+      }
+
+      .option-radio {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        position: relative;
+        z-index: 1;
+      }
+
+      .option-btn.selected .option-radio {
+        border-color: var(--sage);
+        background: var(--sage);
+      }
+
+      .option-btn.selected .option-radio::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .option-text {
+        position: relative;
+        z-index: 1;
+        line-height: 1.4;
+      }
+      .option-desc {
+        font-size: 0.775rem;
+        color: var(--muted);
+        font-weight: 400;
+        margin-top: 2px;
+      }
+
+      /* Dropdown style for Q3 */
+      .q-select-wrap {
+        position: relative;
+        max-width: 520px;
+      }
+
+      .q-select {
+        width: 100%;
+        padding: 16px 48px 16px 20px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        color: var(--ink);
+        appearance: none;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+        outline: none;
+      }
+
+      .q-select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-pale);
+      }
+
+      .q-select-arrow {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: var(--muted);
+        font-size: 1.1rem;
+      }
+
+      /* Info note */
+      .info-note {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 16px 20px;
+        background: var(--gold-pale);
+        border: 1px solid var(--gold-border);
+        border-radius: 10px;
+        margin-top: 16px;
+        max-width: 520px;
+        font-size: 0.85rem;
+        color: #7a5a18;
+        line-height: 1.5;
+      }
+
+      .info-note-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* Nav buttons */
+      .q-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 36px;
+      }
+
+      .btn-next {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: var(--cream);
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "DM Sans", sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-next::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--sage);
+        transform: translateX(-101%);
+        transition: transform 0.3s;
+      }
+
+      .btn-next:hover::after {
+        transform: translateX(0);
+      }
+      .btn-next span,
+      .btn-next .arrow {
+        position: relative;
+        z-index: 1;
+      }
+      .btn-next:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .btn-next:disabled::after {
+        display: none;
+      }
+      .btn-next .arrow {
+        transition: transform 0.2s;
+      }
+      .btn-next:hover:not(:disabled) .arrow {
+        transform: translateX(4px);
+      }
+
+      .btn-back {
+        background: none;
+        border: none;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.875rem;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 8px 4px;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-back:hover {
+        color: var(--ink);
+      }
+      .btn-back.hidden {
+        visibility: hidden;
+      }
+
+      /* ── REJECTION SCREENS ── */
+      .rejection-screen {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 340px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      .rejection-screen.active {
+        display: flex;
+      }
+
+      .rejection-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--red-pale);
+        border: 1.5px solid var(--red-border);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 24px;
+      }
+
+      .rejection-screen h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+      }
+
+      .rejection-screen p {
+        font-size: 0.95rem;
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 480px;
+        margin-bottom: 32px;
+      }
+
+      .rejection-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn-contact {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 22px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+        background: white;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: all 0.2s;
+      }
+      .btn-contact:hover {
+        border-color: var(--ink);
+        background: var(--cream);
+      }
+
+      .btn-restart {
+        background: none;
+        border: none;
+        font-size: 0.875rem;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        text-decoration: underline;
+        padding: 4px;
+        transition: color 0.2s;
+      }
+      .btn-restart:hover {
+        color: var(--ink);
+      }
+
+      /* ── SUCCESS SCREEN ── */
+      .success-screen {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 340px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      .success-screen.active {
+        display: flex;
+      }
+
+      .success-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--sage-pale);
+        border: 1.5px solid rgba(61, 90, 74, 0.3);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 24px;
+      }
+
+      .success-screen h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+      }
+
+      .success-screen p {
+        font-size: 0.95rem;
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 480px;
+        margin-bottom: 32px;
+      }
+
+      .btn-proceed {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--sage);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-family: "DM Sans", sans-serif;
+        border: none;
+        cursor: pointer;
+        width: fit-content;
+      }
+
+      .btn-proceed:hover {
+        background: var(--ink);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-proceed .arrow {
+        transition: transform 0.2s;
+      }
+      .btn-proceed:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      /* ── RIGHT PANEL ── */
+      .right-panel {
+        background: var(--cream);
+        border-left: 1px solid var(--border);
+        padding: 64px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        position: sticky;
+        top: 61px;
+        height: calc(100vh - 61px);
+        overflow-y: auto;
+      }
+
+      .panel-section {
+      }
+
+      .panel-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 14px;
+      }
+
+      .summary-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .summary-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: white;
+        transition: all 0.3s;
+        opacity: 0.35;
+      }
+
+      .summary-item.answered {
+        opacity: 1;
+        border-color: rgba(61, 90, 74, 0.25);
+        background: white;
+      }
+
+      .summary-item-num {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        color: var(--muted);
+        flex-shrink: 0;
+        margin-top: 2px;
+        min-width: 18px;
+      }
+
+      .summary-item.answered .summary-item-num {
+        color: var(--sage);
+      }
+
+      .summary-item-content {
+        flex: 1;
+      }
+
+      .summary-item-q {
+        font-size: 0.775rem;
+        color: var(--muted);
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      .summary-item-a {
+        font-size: 0.825rem;
+        color: var(--ink);
+        font-weight: 600;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s;
+      }
+
+      .summary-item.answered .summary-item-a {
+        opacity: 1;
+        max-height: 60px;
+      }
+
+      .summary-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        transition: all 0.3s;
+        margin-top: 1px;
+        color: transparent;
+      }
+
+      .summary-item.answered .summary-check {
+        background: var(--sage);
+        border-color: var(--sage);
+        color: white;
+      }
+
+      .what-you-need {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        background: white;
+      }
+
+      .need-item {
+        display: flex;
+        gap: 10px;
+        font-size: 0.825rem;
+        color: var(--ink);
+        padding: 7px 0;
+        border-bottom: 1px solid var(--border);
+        align-items: flex-start;
+      }
+      .need-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .need-item:first-child {
+        padding-top: 0;
+      }
+
+      .need-icon {
+        width: 18px;
+        height: 18px;
+        background: var(--gold-pale);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .secure-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.775rem;
+        color: var(--muted);
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: white;
+      }
+
+      .secure-badge svg {
+        width: 14px;
+        height: 14px;
+        color: var(--sage);
+        flex-shrink: 0;
+      }
+
+      /* ── ANIMATIONS ── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        nav {
+          padding: 16px 20px;
+        }
+        .shell {
+          grid-template-columns: 1fr;
+        }
+        .left-panel {
+          padding: 40px 24px;
+        }
+        .right-panel {
+          display: none;
+        }
+        .question-wrap {
+          min-height: 280px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="itin-landing-page.html" class="nav-logo"
+        >IKSHANA <span>Z.Inc</span></a
+      >
+      <a href="itin-landing-page.html" class="nav-back">
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path d="M10 12L6 8l4-4" />
+        </svg>
+        Back to Home
+      </a>
+    </nav>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="shell">
+      <!-- LEFT: QUESTIONS -->
+      <div class="left-panel">
+        <!-- Step dots -->
+        <div class="step-indicator" id="stepIndicator">
+          <div class="step-dot active" data-step="0"></div>
+          <div class="step-dot" data-step="1"></div>
+          <div class="step-dot" data-step="2"></div>
+          <div class="step-dot" data-step="3"></div>
+          <span class="step-label" id="stepLabel">Question 1 of 4</span>
+        </div>
+
+        <!-- Questions container -->
+        <div class="question-wrap" id="questionWrap">
+          <!-- Q1 -->
+          <div class="question-slide active" data-q="0">
+            <div class="q-eyebrow">Eligibility Check · Step 1</div>
+            <h2 class="q-text">
+              Are you a non-US citizen or non-US resident alien?
+            </h2>
+            <p class="q-sub">
+              US Green Card holders (Lawful Permanent Residents) are eligible
+              for an SSN and typically do not qualify for an ITIN.
+            </p>
+            <div class="options">
+              <button
+                class="option-btn"
+                data-q="0"
+                data-val="yes"
+                onclick="selectOption(this, 0)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  Yes, I am a non-US citizen or non-resident alien
+                  <div class="option-desc">
+                    Foreign nationals, visa holders, non-residents
+                  </div>
+                </div>
+              </button>
+              <button
+                class="option-btn"
+                data-q="0"
+                data-val="no"
+                onclick="selectOption(this, 0)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  No, I am a US citizen or Green Card holder
+                  <div class="option-desc">
+                    US citizens, permanent residents
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div class="q-actions">
+              <button class="btn-back hidden" onclick="goBack()">← Back</button>
+              <button
+                class="btn-next"
+                id="nextBtn0"
+                disabled
+                onclick="goNext(0)"
+              >
+                <span>Continue</span><span class="arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-slide" data-q="1">
+            <div class="q-eyebrow">Eligibility Check · Step 2</div>
+            <h2 class="q-text">
+              Do you currently have a US Social Security Number?
+            </h2>
+            <p class="q-sub">
+              If you have an SSN — even if issued in error — you are not
+              eligible for an ITIN. Your SSN serves the same purpose for tax
+              filing.
+            </p>
+            <div class="options">
+              <button
+                class="option-btn"
+                data-q="1"
+                data-val="yes"
+                onclick="selectOption(this, 1)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  Yes, I have a Social Security Number
+                  <div class="option-desc">
+                    SSN was issued to me (even if inactive)
+                  </div>
+                </div>
+              </button>
+              <button
+                class="option-btn"
+                data-q="1"
+                data-val="no"
+                onclick="selectOption(this, 1)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  No, I do not have an SSN
+                  <div class="option-desc">
+                    I have never been issued a Social Security Number
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div class="q-actions">
+              <button class="btn-back" onclick="goBack()">← Back</button>
+              <button
+                class="btn-next"
+                id="nextBtn1"
+                disabled
+                onclick="goNext(1)"
+              >
+                <span>Continue</span><span class="arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-slide" data-q="2">
+            <div class="q-eyebrow">Eligibility Check · Step 3</div>
+            <h2 class="q-text">Why do you need an ITIN?</h2>
+            <p class="q-sub">
+              Select the option that best describes your situation. This
+              determines which IRS W-7 category applies to you.
+            </p>
+            <div class="q-select-wrap">
+              <select
+                class="q-select"
+                id="reasonSelect"
+                onchange="selectReason(this)"
+              >
+                <option value="">Select your reason…</option>
+                <option value="treaty_benefits">US tax treaty benefits</option>
+                <option value="spouse_or_dependent">
+                  Spouse or dependent of a US taxpayer
+                </option>
+                <option value="spouse_of_nra">
+                  Spouse or dependent of a non-resident alien visa holder
+                </option>
+                <option value="us_resident_filing">
+                  US resident alien filing a tax return
+                </option>
+                <option value="nra_filing">
+                  Non-resident alien filing a US tax return
+                </option>
+                <option value="student_researcher">
+                  Student, professor, or researcher (F, J, M, Q visa)
+                </option>
+                <option value="investment_income">
+                  Investment, rental, or business income from US sources
+                </option>
+                <option value="other">
+                  Other US tax reporting requirement
+                </option>
+              </select>
+              <span class="q-select-arrow">▾</span>
+            </div>
+            <div class="q-actions">
+              <button class="btn-back" onclick="goBack()">← Back</button>
+              <button
+                class="btn-next"
+                id="nextBtn2"
+                disabled
+                onclick="goNext(2)"
+              >
+                <span>Continue</span><span class="arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="question-slide" data-q="3">
+            <div class="q-eyebrow">Eligibility Check · Step 4</div>
+            <h2 class="q-text">
+              Have you previously applied for or received an ITIN?
+            </h2>
+            <p class="q-sub">
+              ITINs expire if not used on a federal return for 3 consecutive
+              years. If yours has expired, we handle renewals through the same
+              process.
+            </p>
+            <div class="options">
+              <button
+                class="option-btn"
+                data-q="3"
+                data-val="no"
+                onclick="selectOption(this, 3)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  No, this is my first ITIN application
+                  <div class="option-desc">I have never applied before</div>
+                </div>
+              </button>
+              <button
+                class="option-btn"
+                data-q="3"
+                data-val="yes"
+                onclick="selectOption(this, 3)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">
+                  Yes, I previously had an ITIN (expired or active)
+                  <div class="option-desc">
+                    I held an ITIN in the past or still have one
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div id="priorItinNote" class="info-note" style="display: none">
+              <span class="info-note-icon">ℹ</span>
+              <span
+                >If your ITIN has expired, we can renew it through the same W-7
+                process. You'll need your prior ITIN number during the intake
+                form. If your ITIN is still active, you may not need a new one —
+                contact us and we'll confirm.</span
+              >
+            </div>
+            <div class="q-actions">
+              <button class="btn-back" onclick="goBack()">← Back</button>
+              <button
+                class="btn-next"
+                id="nextBtn3"
+                disabled
+                onclick="goNext(3)"
+              >
+                <span>Check My Eligibility</span><span class="arrow">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- end question-wrap -->
+
+        <!-- REJECTION SCREEN A — US Citizen -->
+        <div class="rejection-screen" id="rejectA">
+          <div class="rejection-icon">⚠️</div>
+          <h2>You May Not Be Eligible for an ITIN</h2>
+          <p>
+            ITINs are issued only to non-US persons who cannot obtain a Social
+            Security Number. US citizens and Green Card holders must use their
+            SSN for all US federal tax filings.<br /><br />If you believe you
+            answered incorrectly, or have a more complex situation, our team is
+            happy to help.
+          </p>
+          <div class="rejection-actions">
+            <a href="mailto:support@itinpro.com" class="btn-contact"
+              >✉ Contact Us</a
+            >
+            <button class="btn-restart" onclick="restart()">
+              ← Start Over
+            </button>
+          </div>
+        </div>
+
+        <!-- REJECTION SCREEN B — Has SSN -->
+        <div class="rejection-screen" id="rejectB">
+          <div class="rejection-icon">ℹ️</div>
+          <h2>An SSN Already Covers Your Tax Filing Needs</h2>
+          <p>
+            If you have a Social Security Number, you do not need an ITIN — your
+            SSN is used for all US federal tax purposes. The IRS will not issue
+            an ITIN to someone who holds an SSN.<br /><br />If your SSN was
+            issued in error, has been revoked, or you have a unique situation,
+            contact us directly.
+          </p>
+          <div class="rejection-actions">
+            <a href="mailto:support@itinpro.com" class="btn-contact"
+              >✉ Contact Us</a
+            >
+            <button class="btn-restart" onclick="restart()">
+              ← Start Over
+            </button>
+          </div>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div class="success-screen" id="successScreen">
+          <div class="success-icon">✅</div>
+          <h2>You're Eligible — Let's Begin</h2>
+          <p>
+            Based on your answers, you qualify to apply for an ITIN. The next
+            step is to complete your application form — it takes around 18
+            minutes and can be saved at any point.
+          </p>
+          <a href="intake.html" id="proceedLink" class="btn-proceed">
+            <span>Start My Application</span><span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+      <!-- end left-panel -->
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <div class="panel-section">
+          <div class="panel-label">Your Answers So Far</div>
+          <div class="summary-items">
+            <div class="summary-item" id="sum0">
+              <div class="summary-item-num">01</div>
+              <div class="summary-item-content">
+                <div class="summary-item-q">Citizenship status</div>
+                <div class="summary-item-a" id="sumA0">—</div>
+              </div>
+              <div class="summary-check">✓</div>
+            </div>
+            <div class="summary-item" id="sum1">
+              <div class="summary-item-num">02</div>
+              <div class="summary-item-content">
+                <div class="summary-item-q">Social Security Number</div>
+                <div class="summary-item-a" id="sumA1">—</div>
+              </div>
+              <div class="summary-check">✓</div>
+            </div>
+            <div class="summary-item" id="sum2">
+              <div class="summary-item-num">03</div>
+              <div class="summary-item-content">
+                <div class="summary-item-q">Reason for ITIN</div>
+                <div class="summary-item-a" id="sumA2">—</div>
+              </div>
+              <div class="summary-check">✓</div>
+            </div>
+            <div class="summary-item" id="sum3">
+              <div class="summary-item-num">04</div>
+              <div class="summary-item-content">
+                <div class="summary-item-q">Prior ITIN</div>
+                <div class="summary-item-a" id="sumA3">—</div>
+              </div>
+              <div class="summary-check">✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">What You'll Need Next</div>
+          <div class="what-you-need">
+            <div class="need-item">
+              <div class="need-icon">📘</div>
+              Passport (photo page — color scan)
+            </div>
+            <div class="need-item">
+              <div class="need-icon">📄</div>
+              US tax document (W-2, 1099, or 1042-S)
+            </div>
+            <div class="need-item">
+              <div class="need-icon">🛂</div>
+              Visa copy (if you've entered the US)
+            </div>
+            <div class="need-item">
+              <div class="need-icon">⏱</div>
+              About 18 minutes to complete
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="secure-badge">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M8 1L2 4v4c0 3.3 2.5 6.4 6 7 3.5-.6 6-3.7 6-7V4L8 1z" />
+            </svg>
+            256-bit encrypted · IRS-compliant · Your data is never shared
+          </div>
+        </div>
+      </div>
+      <!-- end right-panel -->
+    </div>
+    <!-- end shell -->
+
+    <script>
+      // ── STATE ──
+      const state = {
+        current: 0,
+        answers: { 0: null, 1: null, 2: null, 3: null },
+        reasonLabel: "",
+      };
+
+      const totalQuestions = 4;
+
+      const summaryLabels = [
+        {
+          yes: "Non-US citizen / non-resident",
+          no: "US citizen or Green Card holder",
+        },
+        {
+          yes: "Has a Social Security Number",
+          no: "No Social Security Number",
+        },
+        null, // reason — custom label
+        { yes: "Previously had an ITIN", no: "First-time applicant" },
+      ];
+
+      const reasonLabels = {
+        treaty_benefits: "Tax treaty benefits",
+        spouse_or_dependent: "Spouse / dependent of US taxpayer",
+        spouse_of_nra: "Spouse / dependent of NRA visa holder",
+        us_resident_filing: "US resident alien — filing tax return",
+        nra_filing: "Non-resident alien — filing tax return",
+        student_researcher: "Student, professor, or researcher",
+        investment_income: "Investment / rental income from US",
+        other: "Other US tax reporting requirement",
+      };
+
+      // ── PROGRESS ──
+      function updateProgress() {
+        const pct = (state.current / totalQuestions) * 100;
+        document.getElementById("progressFill").style.width = pct + "%";
+
+        // Step dots
+        document.querySelectorAll(".step-dot").forEach((dot, i) => {
+          dot.classList.remove("active", "done");
+          if (i === state.current) dot.classList.add("active");
+          else if (i < state.current) dot.classList.add("done");
+        });
+
+        const label = document.getElementById("stepLabel");
+        if (state.current < totalQuestions) {
+          label.textContent = `Question ${state.current + 1} of ${totalQuestions}`;
+        }
+      }
+
+      // ── OPTION SELECTION ──
+      function selectOption(btn, qIndex) {
+        const val = btn.dataset.val;
+        state.answers[qIndex] = val;
+
+        // Clear siblings
+        document
+          .querySelectorAll(`.option-btn[data-q="${qIndex}"]`)
+          .forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+
+        // Enable next
+        document.getElementById(`nextBtn${qIndex}`).disabled = false;
+
+        // Show info note for Q4 if prior ITIN = yes
+        if (qIndex === 3) {
+          document.getElementById("priorItinNote").style.display =
+            val === "yes" ? "flex" : "none";
+        }
+
+        // Update sidebar summary
+        updateSummary(qIndex, val);
+      }
+
+      function selectReason(sel) {
+        const val = sel.value;
+        if (!val) return;
+        state.answers[2] = val;
+        state.reasonLabel = reasonLabels[val] || val;
+        document.getElementById("nextBtn2").disabled = false;
+        updateSummaryReason(state.reasonLabel);
+      }
+
+      // ── SUMMARY SIDEBAR ──
+      function updateSummary(qIndex, val) {
+        const item = document.getElementById(`sum${qIndex}`);
+        const ansEl = document.getElementById(`sumA${qIndex}`);
+        if (!item || !ansEl) return;
+
+        const labels = summaryLabels[qIndex];
+        if (labels) {
+          ansEl.textContent = labels[val] || val;
+          item.classList.add("answered");
+        }
+      }
+
+      function updateSummaryReason(label) {
+        const item = document.getElementById("sum2");
+        const ansEl = document.getElementById("sumA2");
+        if (!item || !ansEl) return;
+        ansEl.textContent = label;
+        item.classList.add("answered");
+      }
+
+      // ── NAVIGATION ──
+      function goNext(qIndex) {
+        const answer = state.answers[qIndex];
+
+        // Q1 fail: US citizen
+        if (qIndex === 0 && answer === "no") {
+          showRejection("rejectA");
+          return;
+        }
+
+        // Q2 fail: has SSN
+        if (qIndex === 1 && answer === "yes") {
+          showRejection("rejectB");
+          return;
+        }
+
+        // Q4 = last → show result
+        if (qIndex === 3) {
+          showSuccess();
+          return;
+        }
+
+        // Animate out current
+        const current = document.querySelector(".question-slide.active");
+        if (current) {
+          current.classList.add("exit");
+          current.classList.remove("active");
+          setTimeout(() => current.classList.remove("exit"), 400);
+        }
+
+        // Animate in next
+        state.current = qIndex + 1;
+        const next = document.querySelector(
+          `.question-slide[data-q="${state.current}"]`,
+        );
+        if (next) {
+          next.style.opacity = "0";
+          next.style.transform = "translateX(40px)";
+          next.classList.add("active");
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              next.style.opacity = "";
+              next.style.transform = "";
+            });
+          });
+        }
+
+        updateProgress();
+      }
+
+      function goBack() {
+        if (state.current === 0) return;
+
+        // Hide rejection/success if visible
+        document
+          .querySelectorAll(".rejection-screen, .success-screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("questionWrap").style.display = "";
+        document.getElementById("stepIndicator").style.display = "";
+
+        const current = document.querySelector(".question-slide.active");
+        if (current) {
+          current.classList.remove("active");
+        }
+
+        state.current = Math.max(0, state.current - 1);
+        const prev = document.querySelector(
+          `.question-slide[data-q="${state.current}"]`,
+        );
+        if (prev) {
+          prev.classList.add("active");
+        }
+
+        updateProgress();
+      }
+
+      // ── OUTCOMES ──
+      function showRejection(id) {
+        document.getElementById("questionWrap").style.display = "none";
+        document.getElementById("stepIndicator").style.display = "none";
+        document.getElementById(id).classList.add("active");
+        document.getElementById("progressFill").style.width = "100%";
+        document.getElementById("progressFill").style.background = "#c0392b";
+      }
+
+      function showSuccess() {
+        document.getElementById("questionWrap").style.display = "none";
+        document.getElementById("stepIndicator").style.display = "none";
+        document.getElementById("successScreen").classList.add("active");
+        document.getElementById("progressFill").style.width = "100%";
+        document.getElementById("progressFill").style.background =
+          "linear-gradient(90deg, #3d5a4a, #c8972b)";
+
+        // Build URL params for intake form
+        const params = new URLSearchParams({
+          itin_reason: state.answers[2] || "",
+          prior_itin: state.answers[3] === "yes" ? "true" : "false",
+        });
+        document.getElementById("proceedLink").href =
+          `intake.html?${params.toString()}`;
+      }
+
+      function restart() {
+        // Reset state
+        state.current = 0;
+        state.answers = { 0: null, 1: null, 2: null, 3: null };
+
+        // Reset UI
+        document
+          .querySelectorAll(".rejection-screen, .success-screen")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".question-slide")
+          .forEach((s) => s.classList.remove("active", "exit"));
+        document
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        document
+          .querySelectorAll(".btn-next")
+          .forEach((b) => (b.disabled = true));
+        document.getElementById("reasonSelect").value = "";
+        document.getElementById("priorItinNote").style.display = "none";
+
+        // Reset summary
+        document
+          .querySelectorAll(".summary-item")
+          .forEach((i) => i.classList.remove("answered"));
+        document
+          .querySelectorAll(".summary-item-a")
+          .forEach((a) => (a.textContent = "—"));
+
+        // Show Q1
+        document.getElementById("questionWrap").style.display = "";
+        document.getElementById("stepIndicator").style.display = "";
+        document
+          .querySelector('.question-slide[data-q="0"]')
+          .classList.add("active");
+
+        // Reset progress
+        document.getElementById("progressFill").style.background =
+          "linear-gradient(90deg, var(--sage), var(--gold))";
+        updateProgress();
+      }
+
+      // Init
+      updateProgress();
+    </script>
+  </body>
+</html>
