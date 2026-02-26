@@ -1,0 +1,2569 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITIN Application — Intake Form · ITINPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f0e0c;
+        --cream: #f7f4ee;
+        --warm-white: #fdfcf9;
+        --gold: #c8972b;
+        --gold-light: #e8b84b;
+        --gold-pale: #f5e9cc;
+        --gold-border: rgba(200, 151, 43, 0.3);
+        --sage: #3d5a4a;
+        --sage-light: #5a7a66;
+        --sage-pale: #d6e4db;
+        --sage-border: rgba(61, 90, 74, 0.3);
+        --muted: #6b6760;
+        --border: #e0dbd0;
+        --border2: #ccc8be;
+        --red: #c0392b;
+        --red-pale: #fdf0ee;
+        --red-border: rgba(192, 57, 43, 0.3);
+        --focus: rgba(200, 151, 43, 0.18);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--warm-white);
+        color: var(--ink);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── NAV ── */
+      nav {
+        background: rgba(253, 252, 249, 0.96);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .nav-logo span {
+        color: var(--gold);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .nav-save {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .nav-save.visible {
+        opacity: 1;
+      }
+      .nav-save-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--sage);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      .nav-back {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-back:hover {
+        color: var(--ink);
+      }
+
+      /* ── PROGRESS ── */
+      .progress-bar-wrap {
+        background: var(--cream);
+        border-bottom: 1px solid var(--border);
+        padding: 0 48px;
+      }
+      .step-tabs {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        max-width: 900px;
+      }
+      .step-tab {
+        flex: 1;
+        padding: 14px 8px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+        cursor: default;
+        border-bottom: 3px solid transparent;
+        transition: border-color 0.3s;
+      }
+      .step-tab.done {
+        border-color: var(--sage);
+        cursor: pointer;
+      }
+      .step-tab.active {
+        border-color: var(--gold);
+      }
+
+      .step-tab-num {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DM Mono", monospace;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--muted);
+        transition: all 0.3s;
+      }
+      .step-tab.done .step-tab-num {
+        background: var(--sage);
+        border-color: var(--sage);
+        color: white;
+      }
+      .step-tab.active .step-tab-num {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: white;
+      }
+
+      .step-tab-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        transition: color 0.3s;
+      }
+      .step-tab.active .step-tab-label {
+        color: var(--ink);
+      }
+      .step-tab.done .step-tab-label {
+        color: var(--sage);
+      }
+
+      /* ── LAYOUT ── */
+      .page-shell {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 48px;
+        gap: 48px;
+        align-items: start;
+      }
+
+      /* ── FORM AREA ── */
+      .form-area {
+        padding: 48px 0 80px;
+      }
+
+      .step-panel {
+        display: none;
+        animation: stepIn 0.35s ease both;
+      }
+      .step-panel.active {
+        display: block;
+      }
+
+      @keyframes stepIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .step-heading {
+        margin-bottom: 36px;
+      }
+      .step-eyebrow {
+        font-family: "DM Mono", monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 10px;
+      }
+      .step-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        color: var(--ink);
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+      .step-desc {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 560px;
+      }
+
+      /* ── FIELD GROUPS ── */
+      .field-group {
+        margin-bottom: 28px;
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .field-row.triple {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .field-row.solo {
+        grid-template-columns: 1fr;
+      }
+      .field-row.wide-narrow {
+        grid-template-columns: 2fr 1fr;
+      }
+      .field-row.narrow-wide {
+        grid-template-columns: 1fr 2fr;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .field-label .req {
+        color: var(--gold);
+        font-size: 0.7rem;
+      }
+      .field-label .opt-tag {
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: var(--muted);
+        background: var(--cream);
+        border: 1px solid var(--border);
+        padding: 1px 6px;
+        border-radius: 4px;
+      }
+
+      .field-hint {
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.4;
+        margin-top: 2px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: white;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--focus);
+      }
+
+      input.error,
+      select.error {
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+      }
+
+      .error-msg {
+        font-size: 0.75rem;
+        color: var(--red);
+        display: none;
+        margin-top: 2px;
+      }
+      .error-msg.visible {
+        display: block;
+      }
+
+      select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6760' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px;
+        cursor: pointer;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 88px;
+      }
+
+      /* Yes/No toggles */
+      .toggle-group {
+        display: flex;
+        gap: 10px;
+      }
+      .toggle-btn {
+        flex: 1;
+        padding: 11px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        background: white;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .toggle-btn:hover {
+        border-color: var(--gold-border);
+        color: var(--ink);
+      }
+      .toggle-btn.selected {
+        background: var(--sage-pale);
+        border-color: var(--sage);
+        color: var(--sage);
+        font-weight: 600;
+      }
+
+      /* Checkbox group */
+      .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .checkbox-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--border);
+        border-radius: 4px;
+        background: white;
+        flex-shrink: 0;
+        margin-top: 1px;
+        cursor: pointer;
+        accent-color: var(--sage);
+        padding: 0;
+        transition: border-color 0.2s;
+      }
+      .checkbox-item input:checked {
+        border-color: var(--sage);
+      }
+      .checkbox-label {
+        font-size: 0.875rem;
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      .checkbox-label em {
+        font-style: normal;
+        font-size: 0.78rem;
+        color: var(--muted);
+        display: block;
+        margin-top: 1px;
+      }
+
+      /* Section divider */
+      .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 32px 0 24px;
+      }
+      .section-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .section-divider-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      /* Conditional field wrapper */
+      .conditional {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition:
+          max-height 0.4s ease,
+          opacity 0.3s ease,
+          margin 0.3s ease;
+        margin-top: 0;
+      }
+      .conditional.show {
+        max-height: 600px;
+        opacity: 1;
+        margin-top: 16px;
+      }
+
+      /* Info callout */
+      .callout {
+        display: flex;
+        gap: 12px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        line-height: 1.55;
+        margin-bottom: 20px;
+      }
+      .callout.info {
+        background: var(--gold-pale);
+        border: 1px solid var(--gold-border);
+        color: #7a5a18;
+      }
+      .callout.success {
+        background: var(--sage-pale);
+        border: 1px solid var(--sage-border);
+        color: #2d4336;
+      }
+      .callout-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* Pre-filled badge */
+      .prefill-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        background: var(--sage-pale);
+        border: 1px solid var(--sage-border);
+        color: var(--sage);
+        border-radius: 4px;
+        padding: 2px 8px;
+        margin-left: 6px;
+      }
+
+      /* ── STEP NAV BUTTONS ── */
+      .step-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+        margin-top: 40px;
+      }
+      .btn-prev {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-prev:hover {
+        border-color: var(--ink);
+        color: var(--ink);
+      }
+      .btn-prev:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .btn-next-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: var(--cream);
+        border: none;
+        border-radius: 8px;
+        padding: 14px 28px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-next-step::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--sage);
+        transform: translateX(-101%);
+        transition: transform 0.3s;
+      }
+      .btn-next-step:hover::after {
+        transform: translateX(0);
+      }
+      .btn-next-step span,
+      .btn-next-step .arr {
+        position: relative;
+        z-index: 1;
+      }
+      .btn-next-step .arr {
+        transition: transform 0.2s;
+      }
+      .btn-next-step:hover .arr {
+        transform: translateX(4px);
+      }
+
+      .btn-submit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--sage);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 15px 32px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-submit:hover {
+        background: var(--ink);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        padding: 48px 0 80px;
+        position: sticky;
+        top: 80px;
+      }
+
+      .sidebar-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+
+      .sidebar-card-head {
+        padding: 14px 18px;
+        background: var(--cream);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar-card-head-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar-card-body {
+        padding: 16px 18px;
+      }
+
+      .progress-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .progress-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.825rem;
+        color: var(--muted);
+        padding: 6px 0;
+        position: relative;
+      }
+      .progress-step::after {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 100%;
+        width: 2px;
+        height: 8px;
+        background: var(--border);
+      }
+      .progress-step:last-child::after {
+        display: none;
+      }
+      .progress-step-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DM Mono", monospace;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: var(--muted);
+        flex-shrink: 0;
+        transition: all 0.3s;
+      }
+      .progress-step.s-done .progress-step-num {
+        background: var(--sage);
+        border-color: var(--sage);
+        color: white;
+      }
+      .progress-step.s-active .progress-step-num {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: white;
+      }
+      .progress-step.s-done {
+        color: var(--sage);
+      }
+      .progress-step.s-active {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .progress-step.s-done::after {
+        background: var(--sage-pale);
+      }
+
+      .time-estimate {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        padding: 10px 0 0;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+      }
+
+      .doc-checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .doc-check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--ink);
+        padding: 5px 0;
+        border-bottom: 1px solid var(--border);
+        line-height: 1.4;
+      }
+      .doc-check-item:last-child {
+        border-bottom: none;
+      }
+      .doc-check-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background: var(--gold-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.55rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .security-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        color: var(--muted);
+        padding: 10px 14px;
+        background: var(--cream);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      /* ── SUBMISSION SCREEN ── */
+      #submitScreen {
+        display: none;
+        padding: 64px 0;
+        animation: stepIn 0.5s ease both;
+      }
+      #submitScreen.active {
+        display: block;
+      }
+
+      .submit-success {
+        max-width: 560px;
+      }
+      .submit-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--sage-pale);
+        border: 2px solid var(--sage-border);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 28px;
+      }
+      .submit-title {
+        font-family: "Playfair Display", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+      .submit-sub {
+        font-size: 1rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 32px;
+      }
+      .submit-case-id {
+        background: var(--cream);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin-bottom: 28px;
+      }
+      .submit-case-label {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .submit-case-num {
+        font-family: "Playfair Display", serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .submit-next-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      .submit-next-item {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 14px 16px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 0.875rem;
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      .submit-next-num {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--gold);
+        flex-shrink: 0;
+        margin-top: 2px;
+        min-width: 18px;
+      }
+      .btn-upload-docs {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--sage);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        font-family: "DM Sans", sans-serif;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-upload-docs:hover {
+        background: var(--ink);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 960px) {
+        nav {
+          padding: 14px 20px;
+        }
+        .progress-bar-wrap {
+          padding: 0 20px;
+        }
+        .page-shell {
+          grid-template-columns: 1fr;
+          padding: 0 20px;
+        }
+        .sidebar {
+          display: none;
+        }
+        .field-row {
+          grid-template-columns: 1fr;
+        }
+        .field-row.triple {
+          grid-template-columns: 1fr;
+        }
+        .field-row.wide-narrow,
+        .field-row.narrow-wide {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="itin-landing-page.html" class="nav-logo"
+        >IKSHANA <span>Z.Inc</span></a
+      >
+      <div class="nav-right">
+        <div class="nav-save" id="navSave">
+          <div class="nav-save-dot"></div>
+          Progress auto-saved
+        </div>
+        <a href="screener.html" class="nav-back">← Back</a>
+      </div>
+    </nav>
+
+    <!-- STEP TABS -->
+    <div class="progress-bar-wrap">
+      <div class="step-tabs" id="stepTabs">
+        <div class="step-tab active" data-step="1" onclick="jumpToStep(1)">
+          <div class="step-tab-num">1</div>
+          <div class="step-tab-label">Personal</div>
+        </div>
+        <div class="step-tab" data-step="2">
+          <div class="step-tab-num">2</div>
+          <div class="step-tab-label">Passport & Visa</div>
+        </div>
+        <div class="step-tab" data-step="3">
+          <div class="step-tab-num">3</div>
+          <div class="step-tab-label">US Presence</div>
+        </div>
+        <div class="step-tab" data-step="4">
+          <div class="step-tab-num">4</div>
+          <div class="step-tab-label">Tax Purpose</div>
+        </div>
+        <div class="step-tab" data-step="5">
+          <div class="step-tab-num">5</div>
+          <div class="step-tab-label">Declaration</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE SHELL -->
+    <div class="page-shell">
+      <!-- FORM AREA -->
+      <div class="form-area">
+        <!-- ════════════════════════════════
+         STEP 1 — PERSONAL INFORMATION
+    ═════════════════════════════════ -->
+        <div class="step-panel active" id="step1">
+          <div class="step-heading">
+            <div class="step-eyebrow">Step 1 of 5</div>
+            <h2 class="step-title">Personal Information</h2>
+            <p class="step-desc">
+              Enter your details exactly as they appear on your passport. All
+              fields marked with <span style="color: var(--gold)">✦</span> are
+              required.
+            </p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >First Name <span class="req">✦</span></label
+              >
+              <input
+                type="text"
+                id="first_name"
+                placeholder="As on your passport"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_first_name"
+                >Please enter your first name</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Last Name <span class="req">✦</span></label
+              >
+              <input
+                type="text"
+                id="last_name"
+                placeholder="As on your passport"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_last_name"
+                >Please enter your last name</span
+              >
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >Date of Birth <span class="req">✦</span></label
+              >
+              <input type="date" id="date_of_birth" oninput="autosave()" />
+              <span class="error-msg" id="err_date_of_birth"
+                >Please enter a valid date of birth</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Country of Citizenship <span class="req">✦</span></label
+              >
+              <select id="country_of_citizenship" onchange="autosave()">
+                <option value="">Select country…</option>
+              </select>
+              <span class="error-msg" id="err_country_of_citizenship"
+                >Please select your country</span
+              >
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >Email Address <span class="req">✦</span></label
+              >
+              <input
+                type="email"
+                id="email"
+                placeholder="your@email.com"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_email"
+                >Please enter a valid email address</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Phone Number <span class="opt-tag">Optional</span></label
+              >
+              <input
+                type="tel"
+                id="phone"
+                placeholder="+1 (555) 000-0000"
+                oninput="autosave()"
+              />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >Foreign Tax ID <span class="opt-tag">Optional</span></label
+              >
+              <input
+                type="text"
+                id="foreign_tax_id"
+                placeholder="Tax ID from your home country"
+                oninput="autosave()"
+              />
+              <span class="field-hint"
+                >Your national tax identification number, if one exists</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Preferred Language <span class="opt-tag">Optional</span></label
+              >
+              <select id="preferred_language" onchange="autosave()">
+                <option value="">Select language…</option>
+                <option value="english">English</option>
+                <option value="spanish">Spanish</option>
+                <option value="french">French</option>
+                <option value="portuguese">Portuguese</option>
+                <option value="mandarin">Mandarin</option>
+                <option value="arabic">Arabic</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn-prev" disabled>← Previous</button>
+            <button class="btn-next-step" onclick="goToStep(2)">
+              <span>Continue</span><span class="arr">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════
+         STEP 2 — PASSPORT & VISA
+    ═════════════════════════════════ -->
+        <div class="step-panel" id="step2">
+          <div class="step-heading">
+            <div class="step-eyebrow">Step 2 of 5</div>
+            <h2 class="step-title">Passport &amp; Visa Details</h2>
+            <p class="step-desc">
+              Enter your passport information exactly as printed. This maps
+              directly to your IRS Form W-7 identity document section.
+            </p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >Passport Number <span class="req">✦</span></label
+              >
+              <input
+                type="text"
+                id="passport_number"
+                placeholder="e.g. AA1234567"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_passport_number"
+                >Please enter your passport number</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Passport Issuing Country <span class="req">✦</span></label
+              >
+              <select id="passport_country" onchange="autosave()">
+                <option value="">Select country…</option>
+              </select>
+              <span class="error-msg" id="err_passport_country"
+                >Please select the issuing country</span
+              >
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >Passport Issue Date <span class="req">✦</span></label
+              >
+              <input
+                type="date"
+                id="passport_issue_date"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_passport_issue_date"
+                >Please enter the issue date</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Passport Expiry Date <span class="req">✦</span></label
+              >
+              <input
+                type="date"
+                id="passport_expiry_date"
+                oninput="
+                  validatePassportExpiry();
+                  autosave();
+                "
+              />
+              <span class="error-msg" id="err_passport_expiry_date"
+                >Passport must not be expired</span
+              >
+            </div>
+          </div>
+
+          <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-label">US Visa</div>
+            <div class="section-divider-line"></div>
+          </div>
+
+          <div class="field">
+            <label class="field-label"
+              >Do you have a US Visa? <span class="req">✦</span></label
+            >
+            <div class="toggle-group">
+              <button
+                class="toggle-btn"
+                id="visa_yes"
+                onclick="toggleVisa('yes')"
+              >
+                ✓ Yes, I have a US visa
+              </button>
+              <button
+                class="toggle-btn"
+                id="visa_no"
+                onclick="toggleVisa('no')"
+              >
+                ✗ No, I do not
+              </button>
+            </div>
+            <input type="hidden" id="has_us_visa" value="" />
+            <span class="error-msg" id="err_has_us_visa"
+              >Please select an option</span
+            >
+          </div>
+
+          <div class="conditional" id="visaFields">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label"
+                  >Visa Type <span class="req">✦</span></label
+                >
+                <select id="visa_type" onchange="autosave()">
+                  <option value="">Select visa type…</option>
+                  <option value="B1/B2">B-1 / B-2 (Tourist / Business)</option>
+                  <option value="F1">F-1 (Student)</option>
+                  <option value="H1B">H-1B (Specialty Occupation)</option>
+                  <option value="L1">L-1 (Intracompany Transfer)</option>
+                  <option value="J1">J-1 (Exchange Visitor)</option>
+                  <option value="O1">O-1 (Extraordinary Ability)</option>
+                  <option value="TN">TN (NAFTA Professional)</option>
+                  <option value="EB5">EB-5 (Investor)</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label"
+                  >Visa Number <span class="req">✦</span></label
+                >
+                <input
+                  type="text"
+                  id="visa_number"
+                  placeholder="e.g. V12345678"
+                  oninput="autosave()"
+                />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label"
+                  >Visa Issue Date <span class="req">✦</span></label
+                >
+                <input type="date" id="visa_issue_date" oninput="autosave()" />
+              </div>
+              <div class="field">
+                <label class="field-label"
+                  >Visa Expiry Date <span class="req">✦</span></label
+                >
+                <input type="date" id="visa_expiry_date" oninput="autosave()" />
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn-prev" onclick="goToStep(1)">← Previous</button>
+            <button class="btn-next-step" onclick="goToStep(3)">
+              <span>Continue</span><span class="arr">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════
+         STEP 3 — US PRESENCE
+    ═════════════════════════════════ -->
+        <div class="step-panel" id="step3">
+          <div class="step-heading">
+            <div class="step-eyebrow">Step 3 of 5</div>
+            <h2 class="step-title">US Presence History</h2>
+            <p class="step-desc">
+              Tell us about your history of physical presence in the United
+              States. This is required for certain W-7 categories.
+            </p>
+          </div>
+
+          <div class="field">
+            <label class="field-label"
+              >Have you ever been physically present in the US?
+              <span class="req">✦</span></label
+            >
+            <div class="toggle-group">
+              <button
+                class="toggle-btn"
+                id="presence_yes"
+                onclick="togglePresence('yes')"
+              >
+                ✓ Yes
+              </button>
+              <button
+                class="toggle-btn"
+                id="presence_no"
+                onclick="togglePresence('no')"
+              >
+                ✗ No, never
+              </button>
+            </div>
+            <input type="hidden" id="us_presence" value="" />
+            <span class="error-msg" id="err_us_presence"
+              >Please select an option</span
+            >
+          </div>
+
+          <div class="conditional" id="presenceFields">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label"
+                  >Date of First Entry to the US
+                  <span class="req">✦</span></label
+                >
+                <input type="date" id="us_entry_date" oninput="autosave()" />
+              </div>
+              <div class="field">
+                <label class="field-label"
+                  >Port of Entry (City, State) <span class="req">✦</span></label
+                >
+                <input
+                  type="text"
+                  id="us_port_of_entry"
+                  placeholder="e.g. New York, NY"
+                  oninput="autosave()"
+                />
+              </div>
+            </div>
+
+            <div class="field" style="margin-top: 4px">
+              <label class="field-label"
+                >Are you currently in the US? <span class="req">✦</span></label
+              >
+              <div class="toggle-group">
+                <button
+                  class="toggle-btn"
+                  id="current_yes"
+                  onclick="toggleCurrentUS('yes')"
+                >
+                  ✓ Yes, currently in the US
+                </button>
+                <button
+                  class="toggle-btn"
+                  id="current_no"
+                  onclick="toggleCurrentUS('no')"
+                >
+                  ✗ No, I have left
+                </button>
+              </div>
+              <input type="hidden" id="currently_in_us" value="" />
+            </div>
+
+            <div class="conditional" id="currentStateField">
+              <div class="field-row solo" style="margin-top: 0">
+                <div class="field">
+                  <label class="field-label"
+                    >Current US State <span class="req">✦</span></label
+                  >
+                  <select id="current_us_state" onchange="autosave()">
+                    <option value="">Select state…</option>
+                    <option>Alabama</option>
+                    <option>Alaska</option>
+                    <option>Arizona</option>
+                    <option>Arkansas</option>
+                    <option>California</option>
+                    <option>Colorado</option>
+                    <option>Connecticut</option>
+                    <option>Delaware</option>
+                    <option>Florida</option>
+                    <option>Georgia</option>
+                    <option>Hawaii</option>
+                    <option>Idaho</option>
+                    <option>Illinois</option>
+                    <option>Indiana</option>
+                    <option>Iowa</option>
+                    <option>Kansas</option>
+                    <option>Kentucky</option>
+                    <option>Louisiana</option>
+                    <option>Maine</option>
+                    <option>Maryland</option>
+                    <option>Massachusetts</option>
+                    <option>Michigan</option>
+                    <option>Minnesota</option>
+                    <option>Mississippi</option>
+                    <option>Missouri</option>
+                    <option>Montana</option>
+                    <option>Nebraska</option>
+                    <option>Nevada</option>
+                    <option>New Hampshire</option>
+                    <option>New Jersey</option>
+                    <option>New Mexico</option>
+                    <option>New York</option>
+                    <option>North Carolina</option>
+                    <option>North Dakota</option>
+                    <option>Ohio</option>
+                    <option>Oklahoma</option>
+                    <option>Oregon</option>
+                    <option>Pennsylvania</option>
+                    <option>Rhode Island</option>
+                    <option>South Carolina</option>
+                    <option>South Dakota</option>
+                    <option>Tennessee</option>
+                    <option>Texas</option>
+                    <option>Utah</option>
+                    <option>Vermont</option>
+                    <option>Virginia</option>
+                    <option>Washington</option>
+                    <option>West Virginia</option>
+                    <option>Wisconsin</option>
+                    <option>Wyoming</option>
+                    <option>Washington D.C.</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="conditional" id="exitDateField">
+              <div class="field-row solo" style="margin-top: 0">
+                <div class="field">
+                  <label class="field-label"
+                    >Date US Presence Ended <span class="req">✦</span></label
+                  >
+                  <input type="date" id="us_exit_date" oninput="autosave()" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn-prev" onclick="goToStep(2)">← Previous</button>
+            <button class="btn-next-step" onclick="goToStep(4)">
+              <span>Continue</span><span class="arr">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════
+         STEP 4 — TAX PURPOSE
+    ═════════════════════════════════ -->
+        <div class="step-panel" id="step4">
+          <div class="step-heading">
+            <div class="step-eyebrow">Step 4 of 5</div>
+            <h2 class="step-title">Tax Filing Purpose</h2>
+            <p class="step-desc">
+              This section maps directly to IRS Form W-7. Your answers from the
+              eligibility check have been pre-filled where possible.
+            </p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label">
+                Reason for ITIN <span class="req">✦</span>
+                <span
+                  class="prefill-badge"
+                  id="prefillBadge"
+                  style="display: none"
+                  >✓ Pre-filled</span
+                >
+              </label>
+              <select
+                id="itin_reason"
+                onchange="
+                  toggleSpouseFields();
+                  autosave();
+                "
+              >
+                <option value="">Select reason…</option>
+                <option value="treaty_benefits">US tax treaty benefits</option>
+                <option value="spouse_or_dependent">
+                  Spouse or dependent of a US taxpayer
+                </option>
+                <option value="spouse_of_nra">
+                  Spouse or dependent of a non-resident alien visa holder
+                </option>
+                <option value="us_resident_filing">
+                  US resident alien — filing a tax return
+                </option>
+                <option value="nra_filing">
+                  Non-resident alien — filing a US tax return
+                </option>
+                <option value="student_researcher">
+                  Student, professor, or researcher
+                </option>
+                <option value="investment_income">
+                  Investment or rental income from US sources
+                </option>
+                <option value="other">
+                  Other US tax reporting requirement
+                </option>
+              </select>
+              <span class="error-msg" id="err_itin_reason"
+                >Please select your ITIN reason</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Tax Year for ITIN <span class="req">✦</span></label
+              >
+              <select id="tax_year" onchange="autosave()">
+                <option value="">Select year…</option>
+              </select>
+              <span class="error-msg" id="err_tax_year"
+                >Please select the tax year</span
+              >
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label"
+                >US Income Source (Payer Name) <span class="req">✦</span></label
+              >
+              <input
+                type="text"
+                id="income_source_name"
+                placeholder="e.g. Fidelity Investments, ABC Corp"
+                oninput="autosave()"
+              />
+              <span class="field-hint"
+                >Name of the US company, bank, or employer paying you</span
+              >
+              <span class="error-msg" id="err_income_source_name"
+                >Please enter the income source</span
+              >
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Type of US Income <span class="req">✦</span></label
+              >
+              <select id="income_type" onchange="autosave()">
+                <option value="">Select type…</option>
+                <option value="wages">Wages / Salary</option>
+                <option value="interest">Interest / Dividends</option>
+                <option value="rental">Rental Income</option>
+                <option value="capital_gains">Capital Gains</option>
+                <option value="partnership">Partnership Income</option>
+                <option value="royalties">Royalties</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="error-msg" id="err_income_type"
+                >Please select income type</span
+              >
+            </div>
+          </div>
+
+          <!-- Prior ITIN — conditional from screener -->
+          <div class="conditional" id="priorItinField">
+            <div class="callout info">
+              <span class="callout-icon">ℹ</span>
+              You indicated you previously held an ITIN. Please enter your prior
+              ITIN number below.
+            </div>
+            <div class="field-row solo">
+              <div class="field">
+                <label class="field-label"
+                  >Prior ITIN Number <span class="req">✦</span></label
+                >
+                <input
+                  type="text"
+                  id="prior_itin_number"
+                  placeholder="9XX-XX-XXXX"
+                  oninput="autosave()"
+                />
+                <span class="field-hint"
+                  >Format: 9XX-XX-XXXX — from your prior IRS ITIN letter</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Spouse / Dependent — conditional on reason selection -->
+          <div class="conditional" id="spouseFields">
+            <div class="section-divider">
+              <div class="section-divider-line"></div>
+              <div class="section-divider-label">
+                Spouse / Primary Filer Details
+              </div>
+              <div class="section-divider-line"></div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label"
+                  >Primary Filer's Full Name <span class="req">✦</span></label
+                >
+                <input
+                  type="text"
+                  id="spouse_primary_name"
+                  placeholder="Full legal name"
+                  oninput="autosave()"
+                />
+              </div>
+              <div class="field">
+                <label class="field-label"
+                  >Primary Filer's SSN <span class="req">✦</span></label
+                >
+                <input
+                  type="text"
+                  id="spouse_ssn"
+                  placeholder="XXX-XX-XXXX"
+                  oninput="autosave()"
+                />
+                <span class="field-hint"
+                  >The US taxpayer you are filing with or as a dependent
+                  of</span
+                >
+              </div>
+            </div>
+            <div class="field-row solo">
+              <div class="field">
+                <label class="field-label"
+                  >Your Relationship to Primary Filer
+                  <span class="req">✦</span></label
+                >
+                <select id="spouse_relationship" onchange="autosave()">
+                  <option value="">Select relationship…</option>
+                  <option value="spouse">Spouse</option>
+                  <option value="child">Child</option>
+                  <option value="dependent">Other Dependent</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-label">Mailing Address</div>
+            <div class="section-divider-line"></div>
+          </div>
+
+          <div class="field-row solo">
+            <div class="field">
+              <label class="field-label"
+                >Address Line 1 <span class="req">✦</span></label
+              >
+              <input
+                type="text"
+                id="mailing_address_1"
+                placeholder="Street address or P.O. Box"
+                oninput="autosave()"
+              />
+              <span class="error-msg" id="err_mailing_address_1"
+                >Please enter your address</span
+              >
+            </div>
+          </div>
+
+          <div class="field-row triple">
+            <div class="field">
+              <label class="field-label">City <span class="req">✦</span></label>
+              <input type="text" id="mailing_city" oninput="autosave()" />
+              <span class="error-msg" id="err_mailing_city">Required</span>
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >State / Province <span class="req">✦</span></label
+              >
+              <input type="text" id="mailing_state" oninput="autosave()" />
+              <span class="error-msg" id="err_mailing_state">Required</span>
+            </div>
+            <div class="field">
+              <label class="field-label"
+                >Postal Code <span class="req">✦</span></label
+              >
+              <input type="text" id="mailing_zip" oninput="autosave()" />
+              <span class="error-msg" id="err_mailing_zip">Required</span>
+            </div>
+          </div>
+
+          <div class="field-row solo">
+            <div class="field">
+              <label class="field-label"
+                >Country <span class="req">✦</span></label
+              >
+              <select id="mailing_country" onchange="autosave()">
+                <option value="">Select country…</option>
+              </select>
+              <span class="error-msg" id="err_mailing_country"
+                >Please select your country</span
+              >
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn-prev" onclick="goToStep(3)">← Previous</button>
+            <button class="btn-next-step" onclick="goToStep(5)">
+              <span>Continue</span><span class="arr">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════
+         STEP 5 — DECLARATION
+    ═════════════════════════════════ -->
+        <div class="step-panel" id="step5">
+          <div class="step-heading">
+            <div class="step-eyebrow">Step 5 of 5</div>
+            <h2 class="step-title">Review &amp; Declaration</h2>
+            <p class="step-desc">
+              Please review your information and confirm the declarations below
+              before submitting your application.
+            </p>
+          </div>
+
+          <!-- Summary card -->
+          <div class="sidebar-card" style="margin-bottom: 28px">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-head-label">
+                Your Application Summary
+              </div>
+            </div>
+            <div
+              class="sidebar-card-body"
+              id="reviewSummary"
+              style="
+                font-size: 0.85rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px 20px;
+                line-height: 1.5;
+              "
+            >
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-label">Declarations</div>
+            <div class="section-divider-line"></div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input
+                type="checkbox"
+                id="decl_accuracy"
+                onchange="checkDeclarations()"
+              />
+              <span class="checkbox-label">
+                I confirm that all information provided in this application is
+                true, accurate, and complete to the best of my knowledge.
+                <em
+                  >Providing false information on a federal tax form may result
+                  in penalties.</em
+                >
+              </span>
+            </label>
+            <span
+              class="error-msg"
+              id="err_decl_accuracy"
+              style="margin-left: 28px"
+              >This declaration is required</span
+            >
+
+            <label class="checkbox-item" style="margin-top: 8px">
+              <input
+                type="checkbox"
+                id="decl_auth"
+                onchange="checkDeclarations()"
+              />
+              <span class="checkbox-label">
+                I authorize ITINPro to prepare and submit IRS Form W-7 on my
+                behalf using the information and documents I have provided.
+                <em
+                  >This authorization covers preparation, review, and certified
+                  mail submission to the IRS.</em
+                >
+              </span>
+            </label>
+            <span class="error-msg" id="err_decl_auth" style="margin-left: 28px"
+              >This authorization is required</span
+            >
+
+            <label class="checkbox-item" style="margin-top: 8px">
+              <input
+                type="checkbox"
+                id="decl_fee"
+                onchange="checkDeclarations()"
+              />
+              <span class="checkbox-label">
+                I understand that the service fee covers preparation and IRS
+                filing only, and that ITIN processing timelines are determined
+                entirely by the IRS (typically 7–11 weeks).
+                <em
+                  >Signature may be completed remotely via e-sign or in person
+                  at our office — both are valid.</em
+                >
+              </span>
+            </label>
+            <span class="error-msg" id="err_decl_fee" style="margin-left: 28px"
+              >Please acknowledge the fee terms</span
+            >
+          </div>
+
+          <div class="step-actions">
+            <button class="btn-prev" onclick="goToStep(4)">← Previous</button>
+            <button
+              class="btn-submit"
+              id="submitBtn"
+              onclick="submitForm()"
+              disabled
+            >
+              <span>Submit Application</span> ✦
+            </button>
+          </div>
+        </div>
+
+        <!-- SUBMISSION SUCCESS -->
+        <div id="submitScreen">
+          <div class="submit-success">
+            <div class="submit-icon">✅</div>
+            <div class="submit-title">Application Submitted</div>
+            <p class="submit-sub">
+              Your ITIN application has been received. Check your email for your
+              Case ID and document upload link — uploading your documents is the
+              next required step.
+            </p>
+
+            <div class="submit-case-id">
+              <div class="submit-case-label">Your Case ID</div>
+              <div class="submit-case-num" id="generatedCaseId">
+                ITIN-2024-00001
+              </div>
+            </div>
+
+            <div class="submit-next-steps">
+              <div class="submit-next-item">
+                <div class="submit-next-num">01</div>
+                Check your inbox at <strong id="confirmEmail">—</strong> for
+                your upload link
+              </div>
+              <div class="submit-next-item">
+                <div class="submit-next-num">02</div>
+                Upload your passport, tax document, and visa (if applicable)
+              </div>
+              <div class="submit-next-item">
+                <div class="submit-next-num">03</div>
+                Complete payment — a link will be sent once documents are
+                verified
+              </div>
+              <div class="submit-next-item">
+                <div class="submit-next-num">04</div>
+                A reviewer will prepare your W-7 within 1–2 business days of
+                payment
+              </div>
+            </div>
+
+            <a href="upload.html" class="btn-upload-docs">
+              Upload Documents Now →
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- end form-area -->
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <div class="sidebar-card-head-label">Your Progress</div>
+          </div>
+          <div class="sidebar-card-body">
+            <div class="progress-steps" id="sidebarProgress">
+              <div class="progress-step s-active" data-s="1">
+                <div class="progress-step-num">1</div>
+                Personal Information
+              </div>
+              <div class="progress-step" data-s="2">
+                <div class="progress-step-num">2</div>
+                Passport &amp; Visa
+              </div>
+              <div class="progress-step" data-s="3">
+                <div class="progress-step-num">3</div>
+                US Presence History
+              </div>
+              <div class="progress-step" data-s="4">
+                <div class="progress-step-num">4</div>
+                Tax Filing Purpose
+              </div>
+              <div class="progress-step" data-s="5">
+                <div class="progress-step-num">5</div>
+                Declaration &amp; Submit
+              </div>
+            </div>
+            <div class="time-estimate">
+              ⏱ <span id="timeLeft">~18 minutes remaining</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <div class="sidebar-card-head-label">Documents You'll Need</div>
+          </div>
+          <div class="sidebar-card-body">
+            <div class="doc-checklist">
+              <div class="doc-check-item">
+                <div class="doc-check-icon">📘</div>
+                Passport (photo page — color scan)
+              </div>
+              <div class="doc-check-item">
+                <div class="doc-check-icon">📄</div>
+                Tax document (W-2, 1099, or 1042-S)
+              </div>
+              <div class="doc-check-item">
+                <div class="doc-check-icon">🛂</div>
+                Visa copy (if you've entered the US)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="security-row">
+          🔒 256-bit encrypted · Data never shared · IRS-compliant
+        </div>
+      </div>
+    </div>
+    <!-- end page-shell -->
+
+    <script>
+      // ═══════════════════════════════════════════════
+      //  COUNTRIES LIST
+      // ═══════════════════════════════════════════════
+      const countries = [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia and Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cabo Verde",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Congo",
+        "Costa Rica",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Eswatini",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Grenada",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montenegro",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "North Korea",
+        "North Macedonia",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Romania",
+        "Russia",
+        "Rwanda",
+        "Saint Kitts and Nevis",
+        "Saint Lucia",
+        "Saint Vincent and the Grenadines",
+        "Samoa",
+        "San Marino",
+        "Saudi Arabia",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "South Korea",
+        "South Sudan",
+        "Spain",
+        "Sri Lanka",
+        "Sudan",
+        "Suriname",
+        "Sweden",
+        "Switzerland",
+        "Syria",
+        "Taiwan",
+        "Tajikistan",
+        "Tanzania",
+        "Thailand",
+        "Timor-Leste",
+        "Togo",
+        "Tonga",
+        "Trinidad and Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Kingdom",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Vatican City",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Zambia",
+        "Zimbabwe",
+      ];
+
+      function populateCountries() {
+        const selects = [
+          "country_of_citizenship",
+          "passport_country",
+          "mailing_country",
+        ];
+        selects.forEach((id) => {
+          const sel = document.getElementById(id);
+          if (!sel) return;
+          countries.forEach((c) => {
+            const opt = document.createElement("option");
+            opt.value = c;
+            opt.textContent = c;
+            sel.appendChild(opt);
+          });
+        });
+      }
+
+      function populateTaxYears() {
+        const sel = document.getElementById("tax_year");
+        const yr = new Date().getFullYear();
+        for (let y = yr; y >= yr - 3; y--) {
+          const opt = document.createElement("option");
+          opt.value = y;
+          opt.textContent = y;
+          sel.appendChild(opt);
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  URL PARAM PRE-FILL
+      // ═══════════════════════════════════════════════
+      function prefillFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const reason = params.get("itin_reason");
+        const priorItin = params.get("prior_itin");
+
+        if (reason) {
+          const sel = document.getElementById("itin_reason");
+          if (sel) {
+            sel.value = reason;
+            toggleSpouseFields();
+            document.getElementById("prefillBadge").style.display =
+              "inline-flex";
+          }
+        }
+
+        if (priorItin === "true") {
+          document.getElementById("priorItinField").classList.add("show");
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  STEP NAVIGATION
+      // ═══════════════════════════════════════════════
+      let currentStep = 1;
+      const completedSteps = new Set();
+      const TIME_PER_STEP = [0, 5, 4, 3, 5, 1]; // minutes per step
+
+      function goToStep(n) {
+        if (!validateStep(currentStep)) return;
+
+        completedSteps.add(currentStep);
+        document
+          .getElementById(`step${currentStep}`)
+          .classList.remove("active");
+        document.getElementById(`step${n}`).classList.add("active");
+        currentStep = n;
+
+        updateStepTabs();
+        updateSidebarProgress();
+        updateTimeEstimate();
+
+        if (n === 5) buildReviewSummary();
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function jumpToStep(n) {
+        if (!completedSteps.has(n) && n !== currentStep) return;
+        document
+          .getElementById(`step${currentStep}`)
+          .classList.remove("active");
+        document.getElementById(`step${n}`).classList.add("active");
+        currentStep = n;
+        updateStepTabs();
+        updateSidebarProgress();
+        updateTimeEstimate();
+        if (n === 5) buildReviewSummary();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function updateStepTabs() {
+        document.querySelectorAll(".step-tab").forEach((tab) => {
+          const s = parseInt(tab.dataset.step);
+          tab.classList.remove("active", "done");
+          if (s === currentStep) tab.classList.add("active");
+          else if (completedSteps.has(s)) tab.classList.add("done");
+        });
+      }
+
+      function updateSidebarProgress() {
+        document.querySelectorAll(".progress-step").forEach((el) => {
+          const s = parseInt(el.dataset.s);
+          el.classList.remove("s-active", "s-done");
+          if (s === currentStep) el.classList.add("s-active");
+          else if (completedSteps.has(s)) el.classList.add("s-done");
+        });
+      }
+
+      function updateTimeEstimate() {
+        const remaining = TIME_PER_STEP.slice(currentStep).reduce(
+          (a, b) => a + b,
+          0,
+        );
+        const el = document.getElementById("timeLeft");
+        if (el)
+          el.textContent =
+            remaining <= 1
+              ? "< 1 minute remaining"
+              : `~${remaining} minutes remaining`;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  VALIDATION
+      // ═══════════════════════════════════════════════
+      function validateStep(step) {
+        let valid = true;
+
+        const required = {
+          1: [
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "country_of_citizenship",
+            "email",
+          ],
+          2: [
+            "passport_number",
+            "passport_country",
+            "passport_issue_date",
+            "passport_expiry_date",
+            "has_us_visa",
+          ],
+          3: ["us_presence"],
+          4: [
+            "itin_reason",
+            "tax_year",
+            "income_source_name",
+            "income_type",
+            "mailing_address_1",
+            "mailing_city",
+            "mailing_state",
+            "mailing_zip",
+            "mailing_country",
+          ],
+          5: [],
+        };
+
+        (required[step] || []).forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const val = el.value ? el.value.trim() : "";
+          const errEl = document.getElementById("err_" + id);
+          if (!val) {
+            el.classList.add("error");
+            if (errEl) errEl.classList.add("visible");
+            valid = false;
+          } else {
+            el.classList.remove("error");
+            if (errEl) errEl.classList.remove("visible");
+          }
+        });
+
+        // Email format
+        if (step === 1) {
+          const email = document.getElementById("email");
+          const emailErr = document.getElementById("err_email");
+          if (
+            email &&
+            email.value &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
+          ) {
+            email.classList.add("error");
+            if (emailErr) emailErr.classList.add("visible");
+            valid = false;
+          }
+        }
+
+        // Passport expiry
+        if (step === 2) validatePassportExpiry();
+
+        // Visa fields if has_us_visa = yes
+        if (
+          step === 2 &&
+          document.getElementById("has_us_visa").value === "yes"
+        ) {
+          [
+            "visa_type",
+            "visa_number",
+            "visa_issue_date",
+            "visa_expiry_date",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el && !el.value.trim()) {
+              el.classList.add("error");
+              valid = false;
+            }
+          });
+        }
+
+        // Declarations
+        if (step === 5) {
+          ["decl_accuracy", "decl_auth", "decl_fee"].forEach((id) => {
+            const el = document.getElementById(id);
+            const err = document.getElementById("err_" + id);
+            if (el && !el.checked) {
+              if (err) err.classList.add("visible");
+              valid = false;
+            } else {
+              if (err) err.classList.remove("visible");
+            }
+          });
+        }
+
+        return valid;
+      }
+
+      function validatePassportExpiry() {
+        const val = document.getElementById("passport_expiry_date").value;
+        const errEl = document.getElementById("err_passport_expiry_date");
+        const input = document.getElementById("passport_expiry_date");
+        if (val && new Date(val) < new Date()) {
+          input.classList.add("error");
+          if (errEl) errEl.classList.add("visible");
+          errEl.textContent =
+            "Your passport appears to be expired — please check the date";
+        } else if (val) {
+          input.classList.remove("error");
+          if (errEl) errEl.classList.remove("visible");
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  CONDITIONAL FIELDS
+      // ═══════════════════════════════════════════════
+      function toggleVisa(val) {
+        document.getElementById("has_us_visa").value = val;
+        document
+          .getElementById("visa_yes")
+          .classList.toggle("selected", val === "yes");
+        document
+          .getElementById("visa_no")
+          .classList.toggle("selected", val === "no");
+        document
+          .getElementById("visaFields")
+          .classList.toggle("show", val === "yes");
+        autosave();
+      }
+
+      function togglePresence(val) {
+        document.getElementById("us_presence").value = val;
+        document
+          .getElementById("presence_yes")
+          .classList.toggle("selected", val === "yes");
+        document
+          .getElementById("presence_no")
+          .classList.toggle("selected", val === "no");
+        document
+          .getElementById("presenceFields")
+          .classList.toggle("show", val === "yes");
+        autosave();
+      }
+
+      function toggleCurrentUS(val) {
+        document.getElementById("currently_in_us").value = val;
+        document
+          .getElementById("current_yes")
+          .classList.toggle("selected", val === "yes");
+        document
+          .getElementById("current_no")
+          .classList.toggle("selected", val === "no");
+        document
+          .getElementById("currentStateField")
+          .classList.toggle("show", val === "yes");
+        document
+          .getElementById("exitDateField")
+          .classList.toggle("show", val === "no");
+        autosave();
+      }
+
+      function toggleSpouseFields() {
+        const val = document.getElementById("itin_reason").value;
+        const show = val === "spouse_or_dependent" || val === "spouse_of_nra";
+        document.getElementById("spouseFields").classList.toggle("show", show);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  DECLARATIONS
+      // ═══════════════════════════════════════════════
+      function checkDeclarations() {
+        const all = ["decl_accuracy", "decl_auth", "decl_fee"].every((id) => {
+          const el = document.getElementById(id);
+          return el && el.checked;
+        });
+        document.getElementById("submitBtn").disabled = !all;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  REVIEW SUMMARY (Step 5)
+      // ═══════════════════════════════════════════════
+      function buildReviewSummary() {
+        const fields = [
+          {
+            label: "Full Name",
+            val: () => `${v("first_name")} ${v("last_name")}`,
+          },
+          { label: "Date of Birth", val: () => v("date_of_birth") },
+          { label: "Citizenship", val: () => v("country_of_citizenship") },
+          { label: "Email", val: () => v("email") },
+          { label: "Passport No.", val: () => v("passport_number") },
+          { label: "Passport Expiry", val: () => v("passport_expiry_date") },
+          {
+            label: "ITIN Reason",
+            val: () =>
+              document.getElementById("itin_reason").selectedOptions[0]?.text ||
+              "—",
+          },
+          { label: "Tax Year", val: () => v("tax_year") },
+          { label: "Income Source", val: () => v("income_source_name") },
+          { label: "Mailing Country", val: () => v("mailing_country") },
+        ];
+
+        const container = document.getElementById("reviewSummary");
+        container.innerHTML = fields
+          .map((f) => {
+            const val = f.val() || "—";
+            return `<div>
+      <div style="font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${f.label}</div>
+      <div style="font-weight:500;color:var(--ink);">${val}</div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function v(id) {
+        const el = document.getElementById(id);
+        return el ? el.value || "" : "";
+      }
+
+      // ═══════════════════════════════════════════════
+      //  AUTOSAVE
+      // ═══════════════════════════════════════════════
+      let saveTimeout;
+      function autosave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          document.getElementById("navSave").classList.add("visible");
+          setTimeout(
+            () =>
+              document.getElementById("navSave").classList.remove("visible"),
+            2500,
+          );
+        }, 800);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FORM SUBMISSION
+      // ═══════════════════════════════════════════════
+      function submitForm() {
+        if (!validateStep(5)) return;
+
+        // Generate case ID
+        const caseId =
+          "ITIN-" +
+          new Date().getFullYear() +
+          "-" +
+          String(Math.floor(Math.random() * 90000) + 10000);
+        document.getElementById("generatedCaseId").textContent = caseId;
+        document.getElementById("confirmEmail").textContent = v("email") || "—";
+
+        // Build payload
+        const payload = {
+          case_id: caseId,
+          submitted_at: new Date().toISOString(),
+          first_name: v("first_name"),
+          last_name: v("last_name"),
+          date_of_birth: v("date_of_birth"),
+          country_of_citizenship: v("country_of_citizenship"),
+          email: v("email"),
+          phone: v("phone"),
+          foreign_tax_id: v("foreign_tax_id"),
+          preferred_language: v("preferred_language"),
+          passport_number: v("passport_number"),
+          passport_country: v("passport_country"),
+          passport_issue_date: v("passport_issue_date"),
+          passport_expiry_date: v("passport_expiry_date"),
+          has_us_visa: v("has_us_visa"),
+          visa_type: v("visa_type"),
+          visa_number: v("visa_number"),
+          visa_issue_date: v("visa_issue_date"),
+          visa_expiry_date: v("visa_expiry_date"),
+          us_presence: v("us_presence"),
+          us_entry_date: v("us_entry_date"),
+          us_port_of_entry: v("us_port_of_entry"),
+          currently_in_us: v("currently_in_us"),
+          current_us_state: v("current_us_state"),
+          us_exit_date: v("us_exit_date"),
+          itin_reason: v("itin_reason"),
+          tax_year: v("tax_year"),
+          income_source_name: v("income_source_name"),
+          income_type: v("income_type"),
+          prior_itin_number: v("prior_itin_number"),
+          spouse_primary_name: v("spouse_primary_name"),
+          spouse_ssn: v("spouse_ssn"),
+          spouse_relationship: v("spouse_relationship"),
+          mailing_address_1: v("mailing_address_1"),
+          mailing_city: v("mailing_city"),
+          mailing_state: v("mailing_state"),
+          mailing_zip: v("mailing_zip"),
+          mailing_country: v("mailing_country"),
+        };
+
+        // Send to Make.com webhook
+        // Replace YOUR_MAKE_WEBHOOK_URL with your actual Make.com scenario webhook endpoint
+        const WEBHOOK_URL = "YOUR_MAKE_WEBHOOK_URL";
+
+        fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).catch(() => {
+          // Silently fail on webhook error — form still shows success to user
+          // Make.com will retry or log the error on their end
+        });
+
+        // Hide form, show success
+        document.getElementById("step5").classList.remove("active");
+        document.getElementById("submitScreen").classList.add("active");
+        document.getElementById("stepTabs").style.display = "none";
+
+        // Update upload link with case ID
+        const uploadLink = document.querySelector(".btn-upload-docs");
+        if (uploadLink)
+          uploadLink.href = `upload.html?case_id=${caseId}&email=${encodeURIComponent(v("email"))}`;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // ═══════════════════════════════════════════════
+      //  INIT
+      // ═══════════════════════════════════════════════
+      document.addEventListener("DOMContentLoaded", () => {
+        populateCountries();
+        populateTaxYears();
+        prefillFromURL();
+      });
+    </script>
+  </body>
+</html>
